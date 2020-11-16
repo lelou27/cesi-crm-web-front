@@ -31,6 +31,13 @@
 .exit {
 	font-size: 40px !important;
 }
+a {
+	text-decoration: none !important;
+	color: white;
+}
+a:hover {
+	color: white;
+}
 </style>
 
 <template>
@@ -45,9 +52,9 @@
 				</h1>
 			</div>
 			<div class="conteneurBoutons">
-					<button class="btnMain">Gestion des composants</button>
-					<button class="btnMain">Gestion des modules</button>
-					<button class="btnMain">Gestion des gammes</button>
+					<button class="btnMain"><a href="composants">Gestion des composants</a></button>
+					<button class="btnMain"><a href="">Gestion des modules</a></button>
+					<button class="btnMain"><a href="gammes">Gestion des gammes</a></button>
 			</div>
 		</div>
 	</div>
