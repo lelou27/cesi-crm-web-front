@@ -1,13 +1,8 @@
 <template>
   <section class="middle">
-    <img
-      src="~assets/images/logoMadera.png"
-      alt="Logo de l'entreprise Madera"
-      class="logo-madera"
-    />
     <div class="title">Ajout d'un client</div>
     <div class="columns">
-      <div class="column is-7">
+      <div class="column is-6">
         <form action="" method="post" @submit="submitForm" class="form">
           <div class="errors" v-if="errors.length">
             <b-notification
@@ -139,7 +134,7 @@
       </div>
       <div class="column is-5">
         <b-table :data="data" :columns="columns" :debounce-search="1000"
-          >></b-table
+        ></b-table
         >
       </div>
     </div>
