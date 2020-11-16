@@ -50,6 +50,7 @@ body {
         <div class="errors" v-if="errors.length">
           <b-notification
             v-for="error in errors"
+            key="error"
             type="is-danger"
             aria-close-label="Close notification"
             role="alert"
@@ -96,6 +97,8 @@ body {
 </template>
 
 <script>
+import { logUser } from "../../services/AuthService.js";
+
 export default {
   name: "Authentication",
   data() {
@@ -110,6 +113,9 @@ export default {
       this.username = "";
     },
     async submitForm(event) {
+      event.preventDefault();
+      this.errors = [];
+
       if (!this.username) {
         this.errors.push("Veuillez renseigner votre nom d'utilisateur");
       }
@@ -117,11 +123,25 @@ export default {
       if (!this.password) {
         this.errors.push("Veuillez renseigner votre mot de passe");
       }
+      try {
+        const loginAccessToken = await logUser(this.username, this.password);
+        this.$store.commit('user/addUser', {username: this.username, access_token: loginAccessToken})
 
-      // this.$axios.$post()
-      await console.log("ok");
-
-      event.preventDefault();
+        this.createLoginCookie(loginAccessToken);
+      } catch (e) {
+        this.errors.push(e.message);
+      }
+    },
+    createLoginCookie(access_token) {
+      try {
+        const cookieValue = {
+          username: this.username,
+          access_token,
+        };
+        this.$cookies.set("user-params", cookieValue);
+      } catch (e) {
+        throw new Error("Impossible de créer le cookie de connextion");
+      }
     },
   },
 };

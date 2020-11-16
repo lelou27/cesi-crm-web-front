@@ -31,11 +31,15 @@ export default {
     "nuxt-buefy",
     // https://go.nuxtjs.dev/axios
     "@nuxtjs/axios",
+    // With options
+    ['cookie-universal-nuxt'],
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    transpile: ["bcrypt"],
+  },
 };

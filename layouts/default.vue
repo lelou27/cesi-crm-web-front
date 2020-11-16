@@ -5,7 +5,7 @@
 </style>
 
 <template>
-  <div v-if="1 === 3">
+  <div v-if="user.username">
     <Navigation />
 
     <section class="main-content columns">
@@ -32,6 +32,20 @@
 
 <script>
 export default {
+  computed: {
+    user() {
+      if (
+        !this.$store.state.user.username &&
+        this.$cookies.get("user-params")
+      ) {
+        this.$store.commit("user/addUser", {
+          username: this.$cookies.get("user-params").username,
+          access_token: this.$cookies.get("user-params").access_token,
+        });
+      }
+      return this.$store.state.user;
+    },
+  },
   data() {
     return {
       items: [
