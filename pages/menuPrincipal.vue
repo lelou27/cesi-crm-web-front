@@ -46,6 +46,13 @@
 .exit {
 	font-size: 40px !important;
 }
+a {
+	text-decoration: none !important;
+	color: white;
+}
+a:hover {
+	color: white;
+}
 </style>
 
 <template>
@@ -60,9 +67,9 @@
 				</h1>
 			</div>
 			<div class="conteneurBoutons">
-					<button class="btnMain">Créer un devis</button>
-					<button class="btnMain">Gestion des clients</button>
-					<button class="btnMain">Gestion des produits</button>
+					<button class="btnMain"><a href="">Créer un devis</a></button>
+					<button class="btnMain"><a href="">Gestion des clients</a></button>
+					<button class="btnMain"><a href="menuProduits">Gestion des produits</a></button>
 			</div>
 			<footer class="piedPage">
 				<span class="contentFooter">Bonjour Léandre &nbsp&nbsp&nbsp<i class="fa fa-sign-out exit"></i></span>
