@@ -2,10 +2,16 @@
 .navbar-item {
   padding: 0.3rem 0.5rem;
 }
+aside {
+  border-right: 1px solid grey;
+}
+.main-content {
+  height: 100vh;
+}
 </style>
 
 <template>
-  <div v-if="1 === 3">
+  <div v-if="1 === 1">
     <Navigation />
 
     <section class="main-content columns">
