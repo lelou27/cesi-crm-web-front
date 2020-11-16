@@ -58,12 +58,22 @@ export default {
         {
           title: "Home",
           icon: "home",
-          to: { name: "index" },
+          to: { name: "menuPrincipal" },
         },
         {
-          title: "Inspire",
+          title: "Menu des produits",
           icon: "lightbulb",
-          to: { name: "inspire" },
+          to: { name: "menuProduits" },
+        },
+        {
+          title: "Gammes",
+          icon: "window-restore",
+          to: { name: "gammes" },
+        },
+        {
+          title: "Composants",
+          icon: "tools",
+          to: { name: "composants" },
         },
       ],
     };
