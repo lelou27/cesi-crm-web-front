@@ -42,7 +42,7 @@ export default {
     return {
       items: [
         {
-          title: "Home",
+          title: "Menu",
           icon: "home",
           to: { name: "menuPrincipal" },
         },
@@ -60,6 +60,11 @@ export default {
           title: "Composants",
           icon: "tools",
           to: { name: "composants" },
+        },
+        {
+          title: "Modules",
+          icon: "border-all",
+          to: { name: "modules" },
         },
       ],
     };
