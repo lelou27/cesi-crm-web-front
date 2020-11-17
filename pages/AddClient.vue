@@ -1,8 +1,6 @@
 <template>
   <section class="middle">
     <div class="title">Ajout d'un client</div>
-    <div class="columns">
-      <div class="column is-6">
         <form action="" method="post" @submit="submitForm" class="form">
           <div class="errors" v-if="errors.length">
             <b-notification
@@ -131,20 +129,14 @@
             <b-input type="submit"></b-input>
           </b-field>
         </form>
-      </div>
-      <div class="column is-5">
-        <b-table :data="data" :columns="columns" :debounce-search="1000"
-        ></b-table
-        >
-      </div>
-    </div>
   </section>
 </template>
 
 <script>
 export default {
-  name: "CaddClient",
+  name: "addClient",
   data() {
+
     return {
       name: null,
       mail: null,
@@ -153,59 +145,6 @@ export default {
       postalcode: null,
       city: null,
       country: null,
-      data: [
-        {
-          first_name: "Jesse",
-          last_name: "Simmons",
-          date: "2016-10-15 13:43:27",
-          gender: "Male",
-        },
-        {
-          first_name: "John",
-          last_name: "Jacobs",
-          date: "2016-12-15 06:00:53",
-          gender: "Male",
-        },
-        {
-          first_name: "Tina",
-          last_name: "Gilbert",
-          date: "2016-04-26 06:26:28",
-          gender: "Female",
-        },
-        {
-          first_name: "Clarence",
-          last_name: "Flores",
-          date: "2016-04-10 10:28:46",
-          gender: "Male",
-        },
-        {
-          first_name: "Anne",
-          last_name: "Lee",
-          date: "2016-12-06 14:38:38",
-          gender: "Female",
-        },
-      ],
-      columns: [
-        {
-          field: "first_name",
-          label: "First Name",
-          searchable: true,
-        },
-        {
-          field: "last_name",
-          label: "Last Name",
-          searchable: true,
-        },
-        {
-          field: "date",
-          label: "Date",
-          centered: true,
-        },
-        {
-          field: "gender",
-          label: "Gender",
-        },
-      ],
       errors: [],
     };
   },
@@ -217,18 +156,13 @@ export default {
       console.log(this);
 
       event.preventDefault();
-    },
+    }
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/_all";
-
-table {
-  text-align: center;
-  height: 2vh !important;
-}
 
 .title {
   text-align: center;
@@ -251,22 +185,6 @@ body {
     justify-content: center;
     flex-direction: column;
   }
-}
-
-tbody div {
-  overflow-y: scroll;
-  height: 50vh;
-  min-width: 40vw;
-}
-
-td {
-  padding: 1em 0;
-  text-align: center !important;
-}
-
-.logo-madera {
-  margin: 2rem;
-  max-width: 20%;
 }
 
 .submit-button {
