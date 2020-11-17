@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 .conteneurBoutons {
 	display: grid;
 	grid-template-rows: 1fr 1fr 1fr;

@@ -1,4 +1,4 @@
-<style lang="css">
+<style lang="css" scoped>
 html {
 	font-family: BlinkMacSystemFont, -apple-system, sans-serif;
 	overflow-y: hidden !important;
@@ -167,7 +167,7 @@ table tr {
 							<button class="smallButton"><i class="fa fa-minus"></i></button>
 						</div>
 					</div>
-					<div class="ComboLongueur">	
+					<div class="ComboLongueur">
 						<label for="com-module">Modules sélectionnés : </label>
 						<ul id="com-module" class="listModules">
 							<li class="itemModules">Pute</li>
