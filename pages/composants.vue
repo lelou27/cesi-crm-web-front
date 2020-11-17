@@ -5,10 +5,15 @@
   text-align: center;
 }
 
+.title {
+	margin-top: 5%;
+}
+
 .saisie {
   display: flex;
   flex-direction: row;
   margin-right: 2em;
+  margin-top: 5%;
 
   .field {
     width: 50%;
@@ -21,10 +26,12 @@
   width: 50%;
   margin-left: 25%;
   text-align: center;
+  margin-top: 5%;
 
   .button {
     width: 10%;
-    height: 15vh;
+    height: 8vh;
+    width: 4vw;
     font-size: 1.5rem;
     color: #FFF;
 
@@ -32,6 +39,9 @@
       background-color: $grey-dark;
     }
   }
+}
+.tableComposants {
+	margin-top: 5%;
 }
 </style>
 <template>
@@ -87,32 +97,34 @@
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
+    <b-table class="tableComposants" :data="data" :columns="columns"></b-table>
   </section>
-
-  <!--  	<div class="conteneurGeneral">-->
-  <!--  		<div class="conteneurComposants">-->
-  <!--  			-->
-  <!--  			<div class="TableComposants">-->
-  <!--  				<table>-->
-  <!--  					<caption class="titleTable">-->
-  <!--  						<strong>Composants :</strong>-->
-  <!--  					</caption>-->
-  <!--  					<tr class="entetes">-->
-  <!--  						<td>Nature</td><td>Caractéristiques</td><td>Unité d'usage</td>-->
-  <!--  					</tr>-->
-  <!--  					<tr>-->
-  <!--  						<td>Bois</td><td>A chier</td><td>Cm</td>-->
-  <!--  					</tr>-->
-  <!--  					<tr>-->
-  <!--  						<td>Métal</td><td>Franchement solide</td><td>M</td>-->
-  <!--  					</tr>-->
-  <!--  					<tr>-->
-  <!--  						<td>Métal</td><td>Franchement solide</td><td>M</td>-->
-  <!--  					</tr>-->
-  <!--  				</table>-->
-  <!--  			</div>-->
-  <!--  		</div>-->
-  <!--  	</div>-->
 </template>
 
-<script></script>
+<script>
+	export default {
+        data() {
+            return {
+                data: [
+                    { 'nature': 'bois', 'caractéristiques': 'Plutôt fragile comme Touchard', 'unitéUsage': 'bite/m²'},
+                    { 'nature': 'métal', 'caractéristiques': 'Dur comme Lelou27pro', 'unitéUsage': 'pectoraldroit/cm²'},
+                    { 'nature': 'moisissure', 'caractéristiques': 'Vermoulu comme ce diable de Benjamin', 'unitéUsage': 'champignon/kg'}
+                ],
+                columns: [
+                    {
+                        field: 'nature',
+                        label: 'Nature',
+                    },
+                    {
+                        field: 'caractéristiques',
+                        label: 'Caractéristiques',
+                    },
+                    {
+                        field: 'unitéUsage',
+                        label: 'Unité d\'usage',
+                    }
+                ]
+            }
+        }
+    }
+</script>
