@@ -4,7 +4,7 @@ html {
 	overflow-y: hidden !important;
 	/*background-color :#ECECEC;*/
 }
-.boutons {
+.boutonsGammes {
 	grid-column: 2;
 	display: grid;
 	grid-template-rows: 1fr 1fr 1fr;
@@ -69,17 +69,17 @@ html {
 	margin-bottom: auto;
 	text-align: left !important;
 }
-.Valider {
+.ValiderGammes {
 	grid-row :1;
 	grid-column: 2;
 	background-color: green;
 }
-.Modifier {
+.ModifierGammes {
 	grid-row :2;
 	grid-column: 2;
 	background-color: orange;
 }
-.Supprimer {
+.SupprimerGammes {
 	grid-row :3;
 	grid-column: 2;
 	background-color: red;
@@ -175,14 +175,14 @@ table tr {
 						</ul>
 					</div>
 				</div>
-				<div class="boutons">
-					<button class="Valider">
+				<div class="boutonsGammes">
+					<button class="ValiderGammes">
 						<i class="fa fa-check"></i>
 					</button>
-					<button class="Modifier">
+					<button class="ModifierGammes">
 						<i class="fa fa-edit"></i>
 					</button>
-					<button class="Supprimer">
+					<button class="SupprimerGammes">
 						<i class="fa fa-minus-circle"></i>
 					</button>
 				</div>
