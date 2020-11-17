@@ -1,6 +1,6 @@
 <template>
   <section class="middle">
-    <div class="title"> Détail client</div>
+    <div class="title">Détail client</div>
     <div class="columns">
       <div class="column is-7">
         <section class="form">
@@ -29,7 +29,7 @@
                 required
                 rounded
                 type="text"
-                @icon-right-click="() => this.name = ''"
+                @icon-right-click="() => (this.name = '')"
               >
               </b-input>
             </b-field>
@@ -47,7 +47,7 @@
                 required
                 rounded
                 type="email"
-                @icon-right-click="() => this.mail = ''"
+                @icon-right-click="() => (this.mail = '')"
               >
               </b-input>
             </b-field>
@@ -65,7 +65,7 @@
                 required
                 rounded
                 type="tel"
-                @icon-right-click="() => this.phone = ''"
+                @icon-right-click="() => (this.phone = '')"
               >
               </b-input>
             </b-field>
@@ -83,7 +83,7 @@
                 required
                 rounded
                 type="text"
-                @icon-right-click="() => this.address = ''"
+                @icon-right-click="() => (this.address = '')"
               >
               </b-input>
             </b-field>
@@ -101,7 +101,7 @@
                 required
                 rounded
                 type="text"
-                @icon-right-click="() => this.postalcode = ''"
+                @icon-right-click="() => (this.postalcode = '')"
               >
               </b-input>
             </b-field>
@@ -119,7 +119,7 @@
                 required
                 rounded
                 type="text"
-                @icon-right-click="() => this.city = ''"
+                @icon-right-click="() => (this.city = '')"
               >
               </b-input>
             </b-field>
@@ -137,27 +137,36 @@
                 required
                 rounded
                 type="text"
-                @icon-right-click="() => this.country = ''"
+                @icon-right-click="() => (this.country = '')"
               >
               </b-input>
             </b-field>
             <div class="columns">
-              <div class="column is-6">
-
-              </div>
+              <div class="column is-6"></div>
               <div class="column is-1">
                 <b-field>
-                  <b-button id="edit_btn" v-on:click="disabled(true)">Modifier</b-button>
+                  <b-button id="edit_btn" v-on:click="disabled(true)"
+                    >Modifier</b-button
+                  >
                 </b-field>
               </div>
               <div class="column is-1">
                 <b-field>
-                  <b-button id="cancel_btn" style="visibility: hidden;" v-on:click="disabled(false)">Annuler</b-button>
+                  <b-button
+                    id="cancel_btn"
+                    style="visibility: hidden"
+                    v-on:click="disabled(false)"
+                    >Annuler</b-button
+                  >
                 </b-field>
               </div>
               <div class="column is-2">
                 <b-field>
-                  <b-input id="validate_btn" style="visibility: hidden;" type="submit"></b-input>
+                  <b-input
+                    id="validate_btn"
+                    style="visibility: hidden"
+                    type="submit"
+                  ></b-input>
                 </b-field>
               </div>
             </div>
@@ -166,9 +175,8 @@
       </div>
       <div class="column is-5">
         <div>
-          <b-table :fields="fields" :items="items" hover striped></b-table>
+          <b-table :data="data" :columns="columns"></b-table>
         </div>
-
       </div>
     </div>
   </section>
@@ -186,20 +194,21 @@ export default {
       postalcode: null,
       city: null,
       country: null,
-      quotelist: [{ Liste_Devis: "02/05/2020" },
+      data: [
+        { Liste_Devis: "02/05/2020" },
         { Liste_Devis: "03/05/2020" },
         { Liste_Devis: "04/05/2020" },
         { Liste_Devis: "03/06/2020" },
         { Liste_Devis: "03/07/2020" },
-        { Liste_Devis: "03/08/2020" }],
-      fields: ["first_name", "last_name", "age"],
-      items: [
-        { isActive: true, age: 40, first_name: "Dickerson", last_name: "Macdonald" },
-        { isActive: false, age: 21, first_name: "Larsen", last_name: "Shaw" },
-        { isActive: false, age: 89, first_name: "Geneva", last_name: "Wilson" },
-        { isActive: true, age: 38, first_name: "Jami", last_name: "Carney" }
+        { Liste_Devis: "03/08/2020" },
       ],
-      errors: []
+      columns: [
+        {
+          field: "Liste_Devis",
+          label: "Devis"
+        }
+      ],
+      errors: [],
     };
   },
   methods: {
@@ -211,10 +220,15 @@ export default {
       document.getElementById("postalcode_id").disabled = !bool;
       document.getElementById("city_id").disabled = !bool;
       document.getElementById("country_id").disabled = !bool;
-      document.getElementById("edit_btn").style.visibility = bool ? "hidden" : "visible";
-      document.getElementById("cancel_btn").style.visibility = bool ? "visible" : "hidden";
-      document.getElementById("validate_btn").style.visibility = bool ? "visible" : "hidden";
-
+      document.getElementById("edit_btn").style.visibility = bool
+        ? "hidden"
+        : "visible";
+      document.getElementById("cancel_btn").style.visibility = bool
+        ? "visible"
+        : "hidden";
+      document.getElementById("validate_btn").style.visibility = bool
+        ? "visible"
+        : "hidden";
     },
     async submitForm(event) {
       if (!this.username) {
@@ -225,13 +239,10 @@ export default {
       await console.log("ok");
 
       event.preventDefault();
-    }
-  }
+    },
+  },
 };
-
-
 </script>
-
 
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/_all";
@@ -288,5 +299,3 @@ td {
   padding: 0;
 }
 </style>
-
-
