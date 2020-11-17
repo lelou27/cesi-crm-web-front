@@ -125,6 +125,7 @@ export default {
       }
       try {
         const loginAccessToken = await logUser(this.username, this.password);
+
         this.$store.commit('user/addUser', {username: this.username, access_token: loginAccessToken})
 
         this.createLoginCookie(loginAccessToken);

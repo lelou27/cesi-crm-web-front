@@ -1,6 +1,7 @@
 import { API_URL } from "@/constants/contants";
 
 import axios from "axios";
+import {ROUTE_AUTH} from "@/components/Auth/authConstants";
 
 export const logUser = async (username, password) => {
   try {
@@ -10,17 +11,17 @@ export const logUser = async (username, password) => {
     };
     let login;
     try {
-      login = await axios.post(`${API_URL}/auth/login`, params);
+      login = await axios.post(`${API_URL}${ROUTE_AUTH}`, params);
     } catch (e) {
       throw new Error("Les identifiants ne sont pas corrects");
     }
 
-    if (!(login.status === 200)) {
-      throw new Error("Impossible de conncter cet utilisateur");
+    if (!(login.status === 201)) {
+      throw new Error("Impossible de connecter cet utilisateur");
     }
 
     if (!login.data.access_token) {
-      throw new Error("Impossible de conncter cet utilisateur");
+      throw new Error("Impossible de connecter cet utilisateur");
     }
 
     return login.data.access_token;
