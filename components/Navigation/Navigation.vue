@@ -35,7 +35,10 @@
         <p>
           Bonjour,
           <nuxt-link to="/" exact-active-class="is-active" class="navbar-icon">
-            Léandre
+            {{
+              this.$store.state.user.username.charAt(0).toUpperCase() +
+              this.$store.state.user.username.slice(1)
+            }}
           </nuxt-link>
         </p>
         <nuxt-link to="/" exact-active-class="is-active" class="navbar-icon">
