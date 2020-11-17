@@ -92,7 +92,7 @@
               Code postal
               <b-input
                 id="postalcode_id"
-                v-model="postalcode"
+                v-model="postalCode"
                 disabled
                 icon="account"
                 icon-right="close-circle"
@@ -142,29 +142,30 @@
               </b-input>
             </b-field>
             <div class="columns">
-              <div class="column is-6"></div>
-              <div class="column is-1">
+              <div class="column is-4">
                 <b-field>
                   <b-button id="edit_btn" v-on:click="disabled(true)"
-                    >Modifier</b-button
+                  >Modifier
+                  </b-button
                   >
                 </b-field>
               </div>
-              <div class="column is-1">
+              <div class="column is-4">
                 <b-field>
                   <b-button
                     id="cancel_btn"
                     style="visibility: hidden"
                     v-on:click="disabled(false)"
-                    >Annuler</b-button
+                  >Annuler
+                  </b-button
                   >
                 </b-field>
               </div>
-              <div class="column is-2">
+              <div class="column is-4">
                 <b-field>
                   <b-input
                     id="validate_btn"
-                    style="visibility: hidden"
+                    style="visibility: hidden;"
                     type="submit"
                   ></b-input>
                 </b-field>
@@ -175,7 +176,10 @@
       </div>
       <div class="column is-5">
         <div>
-          <b-table :data="data" :columns="columns"></b-table>
+          <b-table :columns="quoteColumns" :data="quoteList"></b-table>
+        </div>
+        <div>
+          <b-table :columns="billColumns" :data="billList"></b-table>
         </div>
       </div>
     </div>
@@ -191,24 +195,38 @@ export default {
       mail: null,
       phone: null,
       address: null,
-      postalcode: null,
+      postalCode: null,
       city: null,
       country: null,
-      data: [
-        { Liste_Devis: "02/05/2020" },
-        { Liste_Devis: "03/05/2020" },
-        { Liste_Devis: "04/05/2020" },
-        { Liste_Devis: "03/06/2020" },
-        { Liste_Devis: "03/07/2020" },
-        { Liste_Devis: "03/08/2020" },
+      quoteList: [
+        { devis: "02/05/2020" },
+        { devis: "03/05/2020" },
+        { devis: "04/05/2020" },
+        { devis: "03/06/2020" },
+        { devis: "03/07/2020" },
+        { devis: "03/08/2020" }
       ],
-      columns: [
+      quoteColumns: [
         {
-          field: "Liste_Devis",
+          field: "devis",
           label: "Devis"
         }
       ],
-      errors: [],
+      billList: [
+        { facture: "02/05/2020" },
+        { facture: "03/05/2020" },
+        { facture: "04/05/2020" },
+        { facture: "03/06/2020" },
+        { facture: "03/07/2020" },
+        { facture: "03/08/2020" }
+      ],
+      billColumns: [
+        {
+          field: "facture",
+          label: "Facture"
+        }
+      ],
+      errors: []
     };
   },
   methods: {
@@ -269,7 +287,6 @@ body {
     flex-direction: column;
   }
 }
-
 tbody div {
   overflow: scroll;
   height: 20vh;
@@ -284,14 +301,6 @@ td {
   margin: 2rem;
   max-width: 20%;
 }
-
-.submit-button {
-  .control {
-    width: 15%;
-    margin-left: 85%;
-  }
-}
-
 .errors {
   width: 50%;
   margin-left: 25%;
