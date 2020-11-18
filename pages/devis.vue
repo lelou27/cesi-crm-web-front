@@ -1,17 +1,17 @@
 <template>
-  <CreaProjet>
+  <SelecGamme>
 
-  </CreaProjet>
+  </SelecGamme>
 </template>
 
 <script>
-import CreaProjet from "~/components/Devis/Crea_projet";
+import SelecGamme from "~/components/Devis/SelecGamme";
 
 export default {
   name: "Devis",
 
   components: {
-    CreaProjet,
+    SelecGamme,
   },
 };
 </script>
