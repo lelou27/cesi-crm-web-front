@@ -39,7 +39,7 @@
         </b-notification>
       </div>
       <div v-else>
-        <UsersTable :users="users" />
+        <UsersTable :users="users" @removeUser="removeUser" />
       </div>
     </div>
   </section>
@@ -61,6 +61,11 @@ export default {
       selected: null,
       error: null
     };
+  },
+  methods: {
+    removeUser(userToRemove) {
+      this.users = this.users.filter((element) => element._id !== userToRemove._id);
+    }
   },
   async fetch() {
     this.isLoading = true;

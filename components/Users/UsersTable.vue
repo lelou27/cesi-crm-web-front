@@ -1,4 +1,14 @@
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.btn-create-user {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+
+  .button {
+    margin: 1rem;
+  }
+}
+</style>
 
 <template>
   <section v-if="users">
@@ -24,21 +34,17 @@
       :pagination-rounded="isPaginationRounded"
       :sort-icon="sortIcon"
       :sort-icon-size="sortIconSize"
-      checkable
       :selected.sync="selectedUser"
       focusable
-      @select="selectUser"
+      checkable
       :checked-rows.sync="checkedRows"
+      @select="selectUser"
       default-sort="user.prenom"
       aria-next-label="Page suivante"
       aria-previous-label="Page précédente"
       aria-page-label="Page"
       aria-current-label="Page courante"
     >
-      <template slot="bottom-left">
-        <b>Total checked</b>: {{ checkedRows.length }}
-      </template>
-
       <b-table-column
         field="user.prenom"
         label="Prénom"
@@ -103,6 +109,20 @@
         </span>
       </b-table-column>
 
+      <div class="btn-create-user">
+        <b-button type="is-info" @click="openModalCreateUser"
+          >Créer un utilisateur</b-button
+        >
+        <b-button
+          :disabled="checkedRows.length === 0"
+          type="is-danger"
+          icon-left="delete"
+          @click="deleteUser"
+          >Supprimer
+          {{ checkedRows.length > 0 ? checkedRows.length : "" }}</b-button
+        >
+      </div>
+
       <UserModal
         v-if="selectedUser"
         :data="selectedUser"
@@ -110,11 +130,21 @@
         @close-modal="close"
         :title="`Informations utilisateur ${selectedUser.username}`"
       />
+
+      <UserModalCreate
+        v-if="showModalCreateUser"
+        :isComponentModalActive="showModalCreateUser"
+        @close-modal="closeCreateUser"
+        title="Création d'un utilisateur"
+        @appendUser="appendNewUser"
+      />
     </b-table>
   </section>
 </template>
 
 <script>
+import { API_URL } from "@/constants/contants";
+
 export default {
   name: "UsersTable",
   props: ["users"],
@@ -128,9 +158,10 @@ export default {
       sortIconSize: "is-small",
       currentPage: 1,
       perPage: 5,
-      checkedRows: [],
       selectedUser: null,
       showModal: false,
+      showModalCreateUser: false,
+      checkedRows: [],
     };
   },
   metaInfo() {
@@ -144,6 +175,50 @@ export default {
     close() {
       this.showModal = false;
       this.selectedUser = null;
+    },
+    openModalCreateUser() {
+      this.showModalCreateUser = true;
+    },
+    closeCreateUser() {
+      this.showModalCreateUser = false;
+    },
+    appendNewUser(user) {
+      this.users.push(user);
+    },
+    deleteUser() {
+      const usersChecked = this.checkedRows.map((user) => user.username);
+      const deleteUserApi = async () => {
+        try {
+          for (const user of this.checkedRows) {
+            await this.$axios.$delete(`${API_URL}/user/${user._id}`);
+            this.$emit("removeUser", user);
+          }
+        } catch (e) {
+          return new Error("Impossible de supprimer l'utilsateur.");
+        }
+      };
+      this.$buefy.dialog.confirm({
+        message: `Voulez-vous vraiment supprimer ${
+          usersChecked.length > 1
+            ? "les utilisateurs suivants"
+            : "l'utilisateur suivant"
+        } : ${usersChecked.join(", ")} `,
+        onConfirm: () => {
+          try {
+            this.$buefy.toast.open({
+              message: "Suppression effectuée",
+              type: "is-success",
+            });
+            deleteUserApi();
+            this.checkedRows = [];
+          } catch (e) {
+            this.$buefy.toast.open({
+              message: e.message,
+              type: "is-danger",
+            });
+          }
+        },
+      });
     },
   },
 };

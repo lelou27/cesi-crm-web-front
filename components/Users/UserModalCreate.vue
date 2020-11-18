@@ -3,28 +3,14 @@
   margin: 0.5rem;
 }
 
-.modal-card-foot {
-  div {
-    width: 50%;
-  }
+.modal-btns {
+  width: 100%;
+  display: flex;
+  justify-content: end;
 }
 
 .select-role {
   margin-bottom: 1rem;
-}
-
-.tag-dates {
-  display: flex;
-  justify-content: start;
-
-  span:last-child {
-    padding-left: 0.5rem;
-  }
-}
-
-.modal-btns {
-  display: flex;
-  justify-content: end;
 }
 </style>
 
@@ -40,7 +26,7 @@
       :on-cancel="close"
     >
       <template #default="props">
-        <form action="" @submit="majUser">
+        <form action="" @submit="addUser">
           <div class="modal-card">
             <header class="modal-card-head">
               <p class="modal-card-title">
@@ -60,18 +46,16 @@
                 </b-notification>
               </div>
               <span v-for="field in fields" class="fields-modal">
-                <div v-if="field.type !== 'date'">
-                  <b-field :label-position="'on-border'" :label="field.display">
-                    <b-input
-                      :type="field.type"
-                      :value="data[field.field]"
-                      :placeholder="field.display"
-                      :required="field.required"
-                      v-model="data[field.field]"
-                    >
-                    </b-input>
-                  </b-field>
-                </div>
+                <b-field :label-position="'on-border'" :label="field.display">
+                  <b-input
+                    :type="field.type"
+                    :placeholder="field.display"
+                    :required="field.required"
+                    v-model="user[field.field]"
+                    @blur="generateUsernameAndEmail"
+                  >
+                  </b-input>
+                </b-field>
               </span>
               <div v-if="roles">
                 <b-field class="select-role">
@@ -85,7 +69,6 @@
                       v-for="option in roles"
                       :value="option._id"
                       :key="option._id"
-                      :selected="data.role && option._id === data.role._id"
                     >
                       {{ option.role }}
                     </option>
@@ -94,24 +77,15 @@
               </div>
             </section>
             <footer class="modal-card-foot">
-              <div class="tag-dates">
-                <span v-for="field in fields">
-                  <span v-if="field.type === 'date'">
-                    <span :class="`tag is-${field.tag}`">
-                      {{ new Date(data[field.field]).toLocaleDateString() }}
-                    </span>
-                  </span>
-                </span>
-              </div>
               <div class="modal-btns">
                 <b-button class="button" type="button" @click="close">
                   Fermer
                 </b-button>
                 <b-button
                   class="button is-primary"
-                  @click="majUser"
                   :loading="isLoading"
-                  >Mettre à jour</b-button
+                  @click="addUser"
+                  >Créer</b-button
                 >
               </div>
             </footer>
@@ -124,13 +98,18 @@
 
 <script>
 import { API_URL } from "@/constants/contants";
+import { reformatString } from "@/helpers/helpers";
 
 export default {
-  name: "UserModal",
-  props: ["data", "isComponentModalActive", "title"],
+  name: "UserModalCreate",
+  props: ["isComponentModalActive", "title"],
   data() {
     return {
       showModal: this.isComponentModalActive,
+      user: {
+        username: null,
+        email: null,
+      },
       fields: [
         {
           field: "nom",
@@ -143,6 +122,7 @@ export default {
           display: "Prénom",
           type: "text",
           required: true,
+          blurMethod: this.createUsername,
         },
         {
           field: "email",
@@ -157,24 +137,16 @@ export default {
           required: true,
         },
         {
-          field: "createdAt",
-          display: "Crée le",
-          type: "date",
+          field: "password",
+          display: "Mot de passe",
+          type: "password",
           required: true,
-          tag: "success",
-        },
-        {
-          field: "updatedAt",
-          display: "Mis à jour le",
-          type: "date",
-          required: true,
-          tag: "warning",
         },
       ],
       roles: null,
       isLoading: false,
       error: null,
-      roleSelected: this.data.role ? this.data.role._id : "",
+      roleSelected: "",
     };
   },
   methods: {
@@ -182,20 +154,31 @@ export default {
       this.showModal = false;
       this.$emit("close-modal", this.showModal);
     },
-    async majUser(event) {
+    async addUser(event) {
       event.preventDefault();
       this.isLoading = true;
-
       try {
-        this.data.role = this.roles.filter(
-          (role) => role._id === this.roleSelected
-        )[0];
-        await this.$axios.$put(`${API_URL}/user/${this.data._id}`, this.data);
+        this.user.role = this.roleSelected;
+        await this.$axios.$post(`${API_URL}/user/create`, this.user);
+        this.user.createdAt = this.$moment();
+        this.user.updatedAt = this.$moment();
+        this.$emit("appendUser", this.user);
         this.close();
       } catch (e) {
         this.error = e;
       }
       this.isLoading = false;
+    },
+    generateUsernameAndEmail(event) {
+      if (this.user.nom && this.user.prenom && !this.user.username) {
+        this.user.username =
+          reformatString(this.user.prenom.toLowerCase()) +
+          reformatString(this.user.nom.charAt(0).toLowerCase());
+
+        this.user.email = `${reformatString(
+          this.user.prenom.toLowerCase()
+        )}.${reformatString(this.user.nom.toLowerCase())}@madera.fr`;
+      }
     },
   },
   async fetch() {
