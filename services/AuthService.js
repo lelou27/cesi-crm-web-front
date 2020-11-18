@@ -24,7 +24,7 @@ export const logUser = async (username, password) => {
       throw new Error("Impossible de connecter cet utilisateur");
     }
 
-    return login.data.access_token;
+    return {loginAccessToken: login.data.access_token, role: login.data.role};
   } catch (e) {
     throw e;
   }

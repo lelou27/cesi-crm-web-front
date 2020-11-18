@@ -59,6 +59,11 @@ export default {
           icon: "lightbulb",
           to: { name: "inspire" },
         },
+        {
+          title: "Utilisateurs",
+          icon: "account",
+          to: { name: "users" },
+        },
       ],
     };
   },

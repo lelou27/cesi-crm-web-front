@@ -23,6 +23,7 @@
     "nuxt-session": "^1.0.3"
   },
   "devDependencies": {
+    "@nuxtjs/moment": "^1.6.1",
     "coffee-loader": "^1.0.1",
     "coffeescript": "^2.5.1",
     "fibers": "^5.0.0",

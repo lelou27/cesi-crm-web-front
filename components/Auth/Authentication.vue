@@ -98,6 +98,7 @@ body {
 
 <script>
 import { logUser } from "../../services/AuthService.js";
+import { API_URL } from "@/constants/contants";
 
 export default {
   name: "Authentication",
@@ -124,20 +125,28 @@ export default {
         this.errors.push("Veuillez renseigner votre mot de passe");
       }
       try {
-        const loginAccessToken = await logUser(this.username, this.password);
+        const { loginAccessToken, role } = await logUser(
+          this.username,
+          this.password
+        );
 
-        this.$store.commit('user/addUser', {username: this.username, access_token: loginAccessToken})
+        this.$store.commit("user/addUser", {
+          username: this.username,
+          access_token: loginAccessToken,
+          role: role.role,
+        });
 
-        this.createLoginCookie(loginAccessToken);
+        this.createLoginCookie(loginAccessToken, role.role);
       } catch (e) {
         this.errors.push(e.message);
       }
     },
-    createLoginCookie(access_token) {
+    createLoginCookie(access_token, role) {
       try {
         const cookieValue = {
           username: this.username,
           access_token,
+          role: role,
         };
         this.$cookies.set("user-params", cookieValue);
       } catch (e) {
