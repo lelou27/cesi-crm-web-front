@@ -31,7 +31,13 @@
 </template>
 
 <script>
+import Authentication from "~/components/Auth/Authentification";
 export default {
+
+  components: {
+    Authentication,
+  },
+
   computed: {
     user() {
       if (
