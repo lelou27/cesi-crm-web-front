@@ -1,5 +1,4 @@
 import { ROUTE_AUTH } from "@/components/Auth/authConstants";
-
 export default function ({ $axios, store, redirect }) {
   $axios.onRequest((config) => {
     if (!config.url.includes(ROUTE_AUTH)) {
@@ -13,7 +12,6 @@ export default function ({ $axios, store, redirect }) {
       }
     }
   });
-
   $axios.onError((error) => {
     const code = parseInt(error.response && error.response.status);
     if (code === 401) {

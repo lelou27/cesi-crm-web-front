@@ -90,6 +90,11 @@ export default {
           icon: "account",
           to: { name: "users" },
         },
+        {
+          title: "Ajouter un client",
+          icon: "plus",
+          to: { name: "AddClient" },
+        },
       ],
     };
   },
