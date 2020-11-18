@@ -31,7 +31,13 @@
 </template>
 
 <script>
+import Authentication from "~/components/Auth/Authentification";
 export default {
+
+  components: {
+    Authentication,
+  },
+
   computed: {
     user() {
       if (
@@ -58,6 +64,11 @@ export default {
           title: "Inspire",
           icon: "lightbulb",
           to: { name: "inspire" },
+        },
+        {
+          title: "Devis",
+          icon: "file-document-edit-outline",
+          to: { name: "crea_projet" },
         },
         {
           title: "Utilisateurs",
