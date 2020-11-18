@@ -138,7 +138,6 @@ import { API_URL, ROUTE_CREATE_CLIENT } from "@/constants/contants";
 export default {
   name: "addClient",
   data() {
-
     return {
       name: null,
       mail: null,
@@ -151,26 +150,24 @@ export default {
     };
   },
   methods: {
-    async submitForm() {
+    async submitForm(event) {
+      event.preventDefault();
       try {
-        const data_post =
-          {
-            first_name: this.name,
-            mail: this.mail,
-            phone: this.phone,
-            address: this.address,
-            postal_code: this.postalcode,
-            city: this.city,
-            country: this.country,
-          }
+        const data_post = {
+          first_name: this.name,
+          mail: this.mail,
+          phone: this.phone,
+          address: this.address,
+          postal_code: this.postalcode,
+          city: this.city,
+          country: this.country,
+        };
 
         try {
-          await this.$axios.post(`${API_URL}${ROUTE_CREATE_CLIENT}`,data_post)
-        }
-        catch (e) {
+          await this.$axios.post(`${API_URL}${ROUTE_CREATE_CLIENT}`, data_post);
+        } catch (e) {
           throw e;
         }
-
       } catch (e) {
         this.errors.push(e.message);
       }
