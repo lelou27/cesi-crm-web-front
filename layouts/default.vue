@@ -67,7 +67,7 @@ export default {
         {
           title: "Composants",
           icon: "tools",
-          to: { name: "composants" },
+          to: { name: "gestionComposants" },
         },
         {
           title: "Modules",
