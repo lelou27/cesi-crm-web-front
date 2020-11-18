@@ -19,6 +19,14 @@
     width: 50%;
   }
 
+  .select {
+    width: 15vw;
+  }
+
+  .dropdown-item {
+    width: 15vw;
+  }
+
   justify-content: space-between;
 }
 
@@ -49,12 +57,27 @@
     <div class="title text-center">
       <h1 class="text-center">Composants</h1>
     </div>
-
+    <div v-if="users === null && !error">
+      <b-loading
+        :is-full-page="false"
+        v-model="loading"
+        :can-cancel="true"
+      ></b-loading>
+    </div>
+    <div v-else-if="error">
+      <b-notification
+        type="is-danger"
+        :closable="false"
+        class="text-center"
+        role="alert">
+        {{ error.message }}
+      </b-notification>
+    </div>
     <div class="saisie">
       <b-field class="titleInputComposant">
         <b-input
           placeholder="Nom du composant"
-          v-model="name"
+          v-model="nomComposant"
           type="text"
           icon="account"
           icon-right="close-circle"
@@ -66,65 +89,75 @@
         </b-input>
       </b-field>
 
-      <b-dropdown aria-role="list">
-        <button class="button is-dark" slot="trigger" slot-scope="{ active }">
-          <span class="titleCombo">Section</span>
-          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-        </button>
-        <b-dropdown-item aria-role="listitem">Section 1</b-dropdown-item>
-      </b-dropdown>
+      <b-select aria-role="list" v-model="caracteristiques" placeholder="Caractéristiques">
+        <option v-for="carac in dataCarac">{{carac.nomCaracteristique}}</option>
+      </b-select>
 
-      <b-dropdown aria-role="list">
-        <button class="button is-dark" slot="trigger" slot-scope="{ active }">
-          <span>Longueur</span>
-          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-        </button>
-
-        <b-dropdown-item aria-role="listitem">Section 1</b-dropdown-item>
-      </b-dropdown>
-      <b-dropdown aria-role="list" class="comboDimension">
-        <button class="button is-dark" slot="trigger" slot-scope="{ active }">
-          <span>Surface en m²</span>
-          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-        </button>
-
-        <b-dropdown-item aria-role="listitem">Section 1</b-dropdown-item>
-      </b-dropdown>
+      <b-select aria-role="list" v-model="uniteMesure" placeholder="Unité d'usage">
+        <option v-for="unite in dataUnite">{{unite.uniteMesure}}</option>
+      </b-select>
     </div>
 
     <div class="boutons">
-      <b-button type="is-success"><i class="fa fa-check"></i></b-button>
+      <b-button type="is-success" @click="insertComposant"><i class="fa fa-check"></i></b-button>
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
-    <b-table class="tableComposants" :data="data" :columns="columns"></b-table>
+    <div v-if="data !== null">
+      <b-table class="tableComposants" :data="data" :columns="columns"></b-table>
+    </div>
   </section>
 </template>
 
 <script>
+import { API_URL } from "@/constants/contants";
 	export default {
         data() {
             return {
-                data: [
-                    { 'nature': 'bois', 'caractéristiques': 'Plutôt fragile comme Touchard', 'unitéUsage': 'bite/m²'},
-                    { 'nature': 'métal', 'caractéristiques': 'Dur comme Lelou27pro', 'unitéUsage': 'pectoraldroit/cm²'},
-                    { 'nature': 'moisissure', 'caractéristiques': 'Vermoulu comme ce diable de Benjamin', 'unitéUsage': 'champignon/kg'}
-                ],
+                nomComposant: null,
+                uniteMesure: null,
+                caracteristique: null,
+                data: null,
+                dataUnite: null,
                 columns: [
                     {
-                        field: 'nature',
-                        label: 'Nature',
+                        field: 'nomComposant',
+                        label: 'Nom du composant',
                     },
                     {
-                        field: 'caractéristiques',
+                        field: 'nomCaracteristique',
                         label: 'Caractéristiques',
                     },
                     {
-                        field: 'unitéUsage',
+                        field: 'unité',
                         label: 'Unité d\'usage',
                     }
-                ]
+                ],
+                dataCarac: null,
+                error: null,
+                loading: null
             }
+        },
+
+        async fetch(){
+          loading: true;
+          try {
+            this.dataUnite = await this.$axios.$get(`${API_URL}/unite`);
+            this.dataCarac = await this.$axios.$get(`${API_URL}/caracteristique`);
+            this.data = await this.$axios.$get(`${API_URL}/composant`);
+          }
+          catch(e) {
+            this.error = e;
+          }
+          loading: false;
+        },
+        methods: {
+          insertComposant(){
+          this.$axios.$post(`${API_URL}/composant`,{nomComposant: this.nomComposant,uniteMesure: this.uniteMesure, nomCaracteristique: this.nomCaracteristique})
+          // console.log(this.nomComposant);
+          // console.log(this.uniteMesure);
+          }
         }
+        
     }
 </script>
