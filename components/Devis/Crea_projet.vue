@@ -92,7 +92,7 @@
       </tr>
     </table>
   <div class="DivButton">
-    <b-button type="is-dark" size="is-large" class="button" @click="">Valider</b-button>
+    <nuxt-link to="/selec_gamme"><b-button type="is-dark" size="is-large" class="button" @click="">Valider</b-button></nuxt-link>
   </div>
   </section>
 </template>
