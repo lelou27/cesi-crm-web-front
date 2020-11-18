@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import SelecGamme from "~/components/Devis/SelecGamme";
+import SelecGamme from "@/components/Devis/SelecGamme";
 
 export default {
-  name: "Devis",
+  name: "selec_gamme",
 
   components: {
     SelecGamme,

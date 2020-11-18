@@ -92,7 +92,7 @@
       </tr>
     </table>
   <div class="DivButton">
-    <b-button type="is-dark" size="is-large" class="button">Valider</b-button>
+    <b-button type="is-dark" size="is-large" class="button" @click="">Valider</b-button>
   </div>
   </section>
 </template>
