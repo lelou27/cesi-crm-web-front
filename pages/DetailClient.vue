@@ -1,6 +1,5 @@
 <template>
   <section class="middle">
-   <div hidden>{{ recup() }}</div>
     <div class="title">Détail client</div>
     <div class="columns">
       <div class="column is-7">
@@ -22,7 +21,7 @@
               <b-input
                 id="name_id"
                 v-model="name"
-                disabled
+                :disabled = "disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -40,7 +39,7 @@
               <b-input
                 id="mail_id"
                 v-model="mail"
-                disabled
+                :disabled = "disabled"
                 icon="email"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -58,7 +57,7 @@
               <b-input
                 id="phone_id"
                 v-model="phone"
-                disabled
+                :disabled = "disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -76,7 +75,7 @@
               <b-input
                 id="address_id"
                 v-model="address"
-                disabled
+                :disabled = "disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -94,7 +93,7 @@
               <b-input
                 id="postalcode_id"
                 v-model="postalCode"
-                disabled
+                :disabled = "disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -112,7 +111,7 @@
               <b-input
                 id="city_id"
                 v-model="city"
-                disabled
+                :disabled = "disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -130,7 +129,7 @@
               <b-input
                 id="country_id"
                 v-model="country"
-                disabled
+                :disabled = "disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -145,28 +144,29 @@
             <div class="columns">
               <div class="column is-4">
                 <b-field>
-                  <b-button id="edit_btn" v-on:click="disabled(true)"
-                  >Modifier
-                  </b-button
-                  >
+                  <b-button
+                    id="edit_btn"
+                    @click="disabled_fields"
+                    :disabled = "!disabled">
+                    Modifier
+                  </b-button>
                 </b-field>
               </div>
               <div class="column is-4">
                 <b-field>
                   <b-button
                     id="cancel_btn"
-                    style="visibility: hidden"
-                    v-on:click="disabled(false)"
-                  >Annuler
-                  </b-button
-                  >
+                    :disabled = "disabled"
+                    @click="disabled_fields">
+                    Annuler
+                  </b-button>
                 </b-field>
               </div>
               <div class="column is-4">
                 <b-field>
                   <b-input
                     id="validate_btn"
-                    style="visibility: hidden;"
+                    :disabled = "disabled"
                     type="submit"
                   ></b-input>
                 </b-field>
@@ -188,7 +188,8 @@
 </template>
 
 <script>
-import { getClient } from "@/services/ClientService";
+
+import { API_URL, ROUTE_GET_CLIENT } from "@/constants/contants";
 
 export default {
   name: "DetailClient",
@@ -199,6 +200,7 @@ export default {
       phone: null,
       address: null,
       postalCode: null,
+      disabled: true,
       city: null,
       country: null,
       quoteList: [
@@ -232,48 +234,60 @@ export default {
       errors: []
     };
   },
-  methods: {
-    disabled(bool) {
-      document.getElementById("name_id").disabled = !bool;
-      document.getElementById("mail_id").disabled = !bool;
-      document.getElementById("phone_id").disabled = !bool;
-      document.getElementById("address_id").disabled = !bool;
-      document.getElementById("postalcode_id").disabled = !bool;
-      document.getElementById("city_id").disabled = !bool;
-      document.getElementById("country_id").disabled = !bool;
-      document.getElementById("edit_btn").style.visibility = bool
-        ? "hidden"
-        : "visible";
-      document.getElementById("cancel_btn").style.visibility = bool
-        ? "visible"
-        : "hidden";
-      document.getElementById("validate_btn").style.visibility = bool
-        ? "visible"
-        : "hidden";
-    },
-    async submitForm(event) {
-      if (!this.username) {
-        this.errors = [];
-        this.errors.push("Veuillez renseigner votre nom d'utilisateur");
-      }
-      // this.$axios.$post()
-      await console.log("ok");
-
-      event.preventDefault();
-    },
-    async recup() {
-      var url_id = window.location.search.substring(1).split("id=")[1];
-      await Promise.resolve(getClient(url_id))
-        .then(value => {
-          this.name = value.first_name;
-          this.mail = value.mail;
-          this.phone = value.phone;
-          this.address = value.address;
-          this.postalCode = value.postal_code;
-          this.city = value.city;
-          this.country = value.country;
-        });
+  async fetch() {
+    this.isLoading = true;
+    const url_id = window.location.search.substring(1).split("id=")[1];
+    try {
+      const client = await this.$axios.$get(`${API_URL}${ROUTE_GET_CLIENT}/${url_id}`)
+      this.name = client.first_name;
+      this.mail = client.address;
+      this.phone = client.phone;
+      this.address = client.address;
+      this.postalCode = client.postal_code;
+      this.city = client.city;
+      this.country = client.country;
     }
+    catch (e) {
+      throw e;
+    }
+    this.isLoading = false;
+  },
+  methods: {
+    async disabled_fields() {
+      this.disabled = !this.disabled;
+      const url_id = window.location.search.substring(1).split("id=")[1];
+      try {
+        const client = await this.$axios.$get(`${API_URL}${ROUTE_GET_CLIENT}/${url_id}`)
+        this.name = client.first_name;
+        this.mail = client.address;
+        this.phone = client.phone;
+        this.address = client.address;
+        this.postalCode = client.postal_code;
+        this.city = client.city;
+        this.country = client.country;
+      }
+      catch (e) {
+        throw e;
+      }
+    } ,
+    async submitForm() {
+      try {
+        const data_post =
+          {
+            first_name: this.name,
+            mail: this.mail,
+            phone: this.phone,
+            address: this.address,
+            postalCode: this.postalCode,
+            city: this.city,
+            country: this.country,
+          }
+        //await createClient(data_post);
+
+      } catch (e) {
+        this.errors.push(e.message);
+      }
+    },
   },
 };
 </script>
