@@ -1,5 +1,6 @@
 <template>
   <section class="middle">
+   <div hidden>{{ recup() }}</div>
     <div class="title">Détail client</div>
     <div class="columns">
       <div class="column is-7">
@@ -187,6 +188,8 @@
 </template>
 
 <script>
+import { getClient } from "@/services/ClientService";
+
 export default {
   name: "DetailClient",
   data() {
@@ -258,6 +261,10 @@ export default {
 
       event.preventDefault();
     },
+    async recup() {
+      var url_id = window.location.search.substring(1).split("id=")[1];
+      await Promise.resolve(getClient(url_id)).then(value => this.name = value.first_name);
+    }
   },
 };
 </script>
