@@ -263,7 +263,16 @@ export default {
     },
     async recup() {
       var url_id = window.location.search.substring(1).split("id=")[1];
-      await Promise.resolve(getClient(url_id)).then(value => this.name = value.first_name);
+      await Promise.resolve(getClient(url_id))
+        .then(value => {
+          this.name = value.first_name;
+          this.mail = value.mail;
+          this.phone = value.phone;
+          this.address = value.address;
+          this.postalCode = value.postal_code;
+          this.city = value.city;
+          this.country = value.country;
+        });
     }
   },
 };
