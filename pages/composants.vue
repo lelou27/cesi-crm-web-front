@@ -6,7 +6,7 @@
 }
 
 .title {
-	margin-top: 5%;
+  margin-top: 5%;
 }
 
 .saisie {
@@ -41,7 +41,7 @@
     height: 8vh;
     width: 4vw;
     font-size: 1.5rem;
-    color: #FFF;
+    color: #fff;
 
     &:hover {
       background-color: $grey-dark;
@@ -49,7 +49,7 @@
   }
 }
 .tableComposants {
-	margin-top: 5%;
+  margin-top: 5%;
 }
 </style>
 <template>
@@ -57,19 +57,13 @@
     <div class="title text-center">
       <h1 class="text-center">Composants</h1>
     </div>
-    <div v-if="users === null && !error">
-      <b-loading
-        :is-full-page="false"
-        v-model="loading"
-        :can-cancel="true"
-      ></b-loading>
-    </div>
-    <div v-else-if="error">
+    <div v-if="error">
       <b-notification
         type="is-danger"
         :closable="false"
         class="text-center"
-        role="alert">
+        role="alert"
+      >
         {{ error.message }}
       </b-notification>
     </div>
@@ -82,82 +76,100 @@
           icon="account"
           icon-right="close-circle"
           icon-right-clickable
-          @icon-right-click="clearName"
+          icon-right-click="close-circle"
           required
           rounded
         >
         </b-input>
       </b-field>
 
-      <b-select aria-role="list" v-model="caracteristiques" placeholder="Caractéristiques">
-        <option v-for="carac in dataCarac">{{carac.nomCaracteristique}}</option>
+      <b-select
+        aria-role="list"
+        v-model="caracteristique"
+        placeholder="Caractéristiques"
+      >
+        <option v-for="carac in dataCarac">
+          {{ carac.nomCaracteristique }}
+        </option>
       </b-select>
 
-      <b-select aria-role="list" v-model="uniteMesure" placeholder="Unité d'usage">
-        <option v-for="unite in dataUnite">{{unite.uniteMesure}}</option>
+      <b-select
+        aria-role="list"
+        v-model="uniteMesure"
+        placeholder="Unité d'usage"
+      >
+        <option v-for="unite in dataUnite">{{ unite.uniteMesure }}</option>
       </b-select>
     </div>
 
     <div class="boutons">
-      <b-button type="is-success" @click="insertComposant"><i class="fa fa-check"></i></b-button>
+      <b-button type="is-success" @click="insertComposant"
+        ><i class="fa fa-check"></i
+      ></b-button>
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
     <div v-if="data !== null">
-      <b-table class="tableComposants" :data="data" :columns="columns"></b-table>
+      <b-table
+        class="tableComposants"
+        :data="data"
+        :columns="columns"
+      ></b-table>
     </div>
   </section>
 </template>
 
 <script>
 import { API_URL } from "@/constants/contants";
-	export default {
-        data() {
-            return {
-                nomComposant: null,
-                uniteMesure: null,
-                caracteristique: null,
-                data: null,
-                dataUnite: null,
-                columns: [
-                    {
-                        field: 'nomComposant',
-                        label: 'Nom du composant',
-                    },
-                    {
-                        field: 'nomCaracteristique',
-                        label: 'Caractéristiques',
-                    },
-                    {
-                        field: 'unité',
-                        label: 'Unité d\'usage',
-                    }
-                ],
-                dataCarac: null,
-                error: null,
-                loading: null
-            }
+export default {
+  data() {
+    return {
+      nomComposant: null,
+      uniteMesure: null,
+      caracteristique: null,
+      data: null,
+      dataUnite: null,
+      columns: [
+        {
+          field: "nomComposant",
+          label: "Nom du composant",
         },
+        {
+          field: "nomCaracteristique",
+          label: "Caractéristiques",
+        },
+        {
+          field: "unité",
+          label: "Unité d'usage",
+        },
+      ],
+      dataCarac: null,
+      error: null,
+      loading: null,
+    };
+  },
 
-        async fetch(){
-          loading: true;
-          try {
-            this.dataUnite = await this.$axios.$get(`${API_URL}/unite`);
-            this.dataCarac = await this.$axios.$get(`${API_URL}/caracteristique`);
-            this.data = await this.$axios.$get(`${API_URL}/composant`);
-          }
-          catch(e) {
-            this.error = e;
-          }
-          loading: false;
-        },
-        methods: {
-          insertComposant(){
-          this.$axios.$post(`${API_URL}/composant`,{nomComposant: this.nomComposant,uniteMesure: this.uniteMesure, nomCaracteristique: this.nomCaracteristique})
-          // console.log(this.nomComposant);
-          // console.log(this.uniteMesure);
-          }
-        }
-        
+  async fetch() {
+    loading: true;
+    try {
+      this.dataUnite = await this.$axios.$get(`${API_URL}/unite`);
+      this.dataCarac = await this.$axios.$get(`${API_URL}/caracteristique`);
+      this.data = await this.$axios.$get(`${API_URL}/composant`);
+    } catch (e) {
+      this.error = e;
     }
+    loading: false;
+  },
+  methods: {
+    insertComposant() {
+      this.$axios.$post(`${API_URL}/composant`, {
+        nomComposant: this.nomComposant,
+        uniteMesure: this.uniteMesure,
+        nomCaracteristique: this.nomCaracteristique,
+      });
+      // console.log(this.nomComposant);
+      // console.log(this.uniteMesure);
+    },
+  },
+};
 </script>
