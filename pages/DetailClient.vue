@@ -21,7 +21,7 @@
               <b-input
                 id="name_id"
                 v-model="name"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -39,7 +39,7 @@
               <b-input
                 id="mail_id"
                 v-model="mail"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="email"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -57,7 +57,7 @@
               <b-input
                 id="phone_id"
                 v-model="phone"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -75,7 +75,7 @@
               <b-input
                 id="address_id"
                 v-model="address"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -93,7 +93,7 @@
               <b-input
                 id="postalcode_id"
                 v-model="postalCode"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -101,7 +101,7 @@
                 required
                 rounded
                 type="text"
-                @icon-right-click="() => (this.postalcode = '')"
+                @icon-right-click="() => (this.postalCode = '')"
               >
               </b-input>
             </b-field>
@@ -111,7 +111,7 @@
               <b-input
                 id="city_id"
                 v-model="city"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -129,7 +129,7 @@
               <b-input
                 id="country_id"
                 v-model="country"
-                :disabled = "disabled"
+                :disabled="disabled"
                 icon="account"
                 icon-right="close-circle"
                 icon-right-clickable
@@ -147,7 +147,8 @@
                   <b-button
                     id="edit_btn"
                     @click="disabled_fields"
-                    :disabled = "!disabled">
+                    :disabled="!disabled"
+                  >
                     Modifier
                   </b-button>
                 </b-field>
@@ -156,8 +157,9 @@
                 <b-field>
                   <b-button
                     id="cancel_btn"
-                    :disabled = "disabled"
-                    @click="disabled_fields">
+                    :disabled="disabled"
+                    @click="disabled_fields"
+                  >
                     Annuler
                   </b-button>
                 </b-field>
@@ -166,7 +168,7 @@
                 <b-field>
                   <b-input
                     id="validate_btn"
-                    :disabled = "disabled"
+                    :disabled="disabled"
                     type="submit"
                   ></b-input>
                 </b-field>
@@ -188,7 +190,6 @@
 </template>
 
 <script>
-
 import { API_URL, ROUTE_GET_CLIENT } from "@/constants/contants";
 
 export default {
@@ -209,13 +210,13 @@ export default {
         { devis: "04/05/2020" },
         { devis: "03/06/2020" },
         { devis: "03/07/2020" },
-        { devis: "03/08/2020" }
+        { devis: "03/08/2020" },
       ],
       quoteColumns: [
         {
           field: "devis",
-          label: "Devis"
-        }
+          label: "Devis",
+        },
       ],
       billList: [
         { facture: "02/05/2020" },
@@ -223,22 +224,24 @@ export default {
         { facture: "04/05/2020" },
         { facture: "03/06/2020" },
         { facture: "03/07/2020" },
-        { facture: "03/08/2020" }
+        { facture: "03/08/2020" },
       ],
       billColumns: [
         {
           field: "facture",
-          label: "Facture"
-        }
+          label: "Facture",
+        },
       ],
-      errors: []
+      errors: [],
     };
   },
   async fetch() {
-    this.isLoading = true;
+    // TODO :: Faire avec les props
     const url_id = window.location.search.substring(1).split("id=")[1];
     try {
-      const client = await this.$axios.$get(`${API_URL}${ROUTE_GET_CLIENT}/${url_id}`)
+      const client = await this.$axios.$get(
+        `${API_URL}${ROUTE_GET_CLIENT}/${url_id}`
+      );
       this.name = client.first_name;
       this.mail = client.address;
       this.phone = client.phone;
@@ -246,18 +249,19 @@ export default {
       this.postalCode = client.postal_code;
       this.city = client.city;
       this.country = client.country;
-    }
-    catch (e) {
+    } catch (e) {
       throw e;
     }
-    this.isLoading = false;
   },
   methods: {
     async disabled_fields() {
       this.disabled = !this.disabled;
+      // TODO :: Refaire avec les props
       const url_id = window.location.search.substring(1).split("id=")[1];
       try {
-        const client = await this.$axios.$get(`${API_URL}${ROUTE_GET_CLIENT}/${url_id}`)
+        const client = await this.$axios.$get(
+          `${API_URL}${ROUTE_GET_CLIENT}/${url_id}`
+        );
         this.name = client.first_name;
         this.mail = client.address;
         this.phone = client.phone;
@@ -265,25 +269,22 @@ export default {
         this.postalCode = client.postal_code;
         this.city = client.city;
         this.country = client.country;
-      }
-      catch (e) {
+      } catch (e) {
         throw e;
       }
-    } ,
+    },
     async submitForm() {
       try {
-        const data_post =
-          {
-            first_name: this.name,
-            mail: this.mail,
-            phone: this.phone,
-            address: this.address,
-            postalCode: this.postalCode,
-            city: this.city,
-            country: this.country,
-          }
+        const data_post = {
+          first_name: this.name,
+          mail: this.mail,
+          phone: this.phone,
+          address: this.address,
+          postalCode: this.postalCode,
+          city: this.city,
+          country: this.country,
+        };
         //await createClient(data_post);
-
       } catch (e) {
         this.errors.push(e.message);
       }
