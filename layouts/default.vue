@@ -66,6 +66,11 @@ export default {
           to: { name: "inspire" },
         },
         {
+          title: "Devis",
+          icon: "file-document-edit-outline",
+          to: { name: "crea_projet" },
+        },
+        {
           title: "Utilisateurs",
           icon: "account",
           to: { name: "users" },
