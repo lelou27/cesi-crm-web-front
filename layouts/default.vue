@@ -1,6 +1,6 @@
 <style>
-.navbar-item {
-  padding: 0.3rem 0.5rem;
+aside {
+  border-right: 1px solid grey;
 }
 </style>
 
@@ -56,14 +56,29 @@ export default {
     return {
       items: [
         {
-          title: "Home",
+          title: "Menu",
           icon: "home",
-          to: { name: "index" },
+          to: { name: "menuPrincipal" },
         },
         {
-          title: "Inspire",
+          title: "Menu des produits",
           icon: "lightbulb",
-          to: { name: "inspire" },
+          to: { name: "menuProduits" },
+        },
+        {
+          title: "Gammes",
+          icon: "window-restore",
+          to: { name: "gammes" },
+        },
+        {
+          title: "Composants",
+          icon: "tools",
+          to: { name: "gestionComposants" },
+        },
+        {
+          title: "Modules",
+          icon: "border-all",
+          to: { name: "modules" },
         },
         {
           title: "Devis",
