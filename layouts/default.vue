@@ -1,6 +1,6 @@
-<style>
-aside {
-  border-right: 1px solid grey;
+<style lang="scss">
+aside.section {
+  padding-right: 0.3rem;
 }
 </style>
 
@@ -33,7 +33,6 @@ aside {
 <script>
 import Authentication from "~/components/Auth/Authentification";
 export default {
-
   components: {
     Authentication,
   },
@@ -56,9 +55,9 @@ export default {
     return {
       items: [
         {
-          title: "Menu",
+          title: "Accueil",
           icon: "home",
-          to: { name: "menuPrincipal" },
+          to: { name: "index" },
         },
         {
           title: "Menu des produits",
