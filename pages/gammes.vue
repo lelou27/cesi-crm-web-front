@@ -74,7 +74,7 @@
       <h1 class="text-center">Gammes</h1>
     </div>
 
-    <div class="saisie">
+    <div class="saisie" v-if="gamme">
       <b-field class="titleInputComposant">
         <b-input
           placeholder="Nom de la gamme"
@@ -113,7 +113,9 @@
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
-    <b-table class="tableGammes" :data="gammes" :columns="columns"></b-table>
+    <div v-if="gammes">
+      <b-table class="tableGammes" :data="gammes" :columns="columns"></b-table>
+    </div>
   </section>
 </template>
 
@@ -166,7 +168,6 @@ export default {
   },
 
   async fetch() {
-    console.log(this.gammes)
     this.loading = true;
     try {
       this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
