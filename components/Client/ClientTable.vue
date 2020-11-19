@@ -15,19 +15,16 @@
 import { API_URL, ROUTE_GET_CLIENT } from "~/constants/contants";
 
 export default {
-name: "ClientTable",
+  name: "ClientTable",
   async fetch() {
-  this.isLoading = true
-        try {
-      const client = await this.$axios.$get(
-        `${API_URL}${ROUTE_GET_CLIENT}`
-      );
-    this.data = client
+    this.isLoading = true;
+    try {
+      const client = await this.$axios.$get(`${API_URL}${ROUTE_GET_CLIENT}`);
+      this.data = client;
     } catch (e) {
       throw e;
     }
-    this.isLoading = false
-
+    this.isLoading = false;
   },
   data() {
     return {
@@ -37,39 +34,35 @@ name: "ClientTable",
       isPaginated: true,
       columns: [
         {
-          field: 'first_name',
-          label: 'Nom',
+          field: "first_name",
+          label: "Nom",
           searchable: true,
           sortable: true,
         },
         {
-          field: 'city',
-          label: 'Ville',
+          field: "city",
+          label: "Ville",
           searchable: true,
           sortable: true,
         },
         {
-          field: 'mail',
-          label: 'Email',
+          field: "mail",
+          label: "Email",
           searchable: true,
         },
         {
-          field: 'phone',
-          label: 'Téléphone',
+          field: "phone",
+          label: "Téléphone",
         },
       ],
-    }
+    };
   },
   methods: {
-    selected(item){
-      console.log(item._id)
-      this.$router.push(`/detailClient?id=${item._id}` )
+    selected(item) {
+      this.$router.push(`/detailClient?id=${item._id}`);
     },
-  }
-
-}
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

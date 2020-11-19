@@ -109,7 +109,9 @@
     </div>
 
     <div class="boutons">
-      <b-button type="is-success" @click="createGamme"><i class="fa fa-check"></i></b-button>
+      <b-button type="is-success" @click="createGamme"
+        ><i class="fa fa-check"></i
+      ></b-button>
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
@@ -164,7 +166,7 @@ export default {
       } catch (e) {
         this.formError = e.message;
       }
-    }
+    },
   },
 
   async fetch() {
