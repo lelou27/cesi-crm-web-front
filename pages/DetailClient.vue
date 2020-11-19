@@ -146,17 +146,7 @@
 
             <div class="columns">
               <div class="buttons">
-                <div class="column is-3">
-              <b-button size="is-medium"
-                        tag="router-link"
-                        icon-left="plus"
-                        to="/listClient"
-                        type="is-info">
-                Liste Client
-              </b-button>
-                </div>
-              <div class="column is-3">
-                <b-field>
+              <div class="column is-4">
                   <b-button
                     id="edit_btn"
                     @click="disabled_fields"
@@ -164,10 +154,8 @@
                   >
                     Modifier
                   </b-button>
-                </b-field>
               </div>
-              <div class="column is-3">
-                <b-field>
+              <div class="column is-4">
                   <b-button
                     id="cancel_btn"
                     :disabled="disabled"
@@ -175,17 +163,29 @@
                   >
                     Annuler
                   </b-button>
-                </b-field>
               </div>
-              <div class="column is-3">
-                <b-field>
+              <div class="column is-4">
                   <b-input
                     id="validate_btn"
                     :disabled="disabled"
                     type="submit"
                   ></b-input>
-                </b-field>
               </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="buttons">
+                <div class="column is-6">
+                  <b-button tag="router-link"
+                            to="/listClient">
+                    Liste Client
+                  </b-button>
+                </div>
+                <div class="column is-6">
+                  <b-button  @click="deleteUser">
+                    Supprimer Client
+                  </b-button>
+                </div>
               </div>
             </div>
           </form>
@@ -201,6 +201,7 @@
       </div>
     </div>
   </section>
+
 </template>
 
 <script>
@@ -250,14 +251,12 @@ export default {
     };
   },
   async fetch() {
-    // TODO :: Faire avec les props
-    const url_id = window.location.search.substring(1).split("id=")[1];
     try {
       const client = await this.$axios.$get(
-        `${API_URL}${ROUTE_GET_CLIENT}/${url_id}`
+        `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`
       );
       this.name = client.first_name;
-      this.mail = client.address;
+      this.mail = client.mail;
       this.phone = client.phone;
       this.address = client.address;
       this.postalCode = client.postal_code;
@@ -268,16 +267,41 @@ export default {
     }
   },
   methods: {
+    deleteUser() {
+      const deleteClientApi = async () => {
+        try {
+            await this.$axios.$delete(`${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`);
+        } catch (e) {
+          return new Error("Impossible de supprimer l'utilsateur.");
+        }
+      };
+      this.$buefy.dialog.confirm({
+        message: `Voulez-vous vraiment supprimer le client ?`,
+        onConfirm: () => {
+          try {
+            this.$buefy.toast.open({
+              message: "Suppression effectuée",
+              type: "is-success",
+            });
+            deleteClientApi();
+            this.$router.push('/listClient');
+          } catch (e) {
+            this.$buefy.toast.open({
+              message: e.message,
+              type: "is-danger",
+            });
+          }
+        },
+      });
+    },
     async disabled_fields() {
       this.disabled = !this.disabled;
-      // TODO :: Refaire avec les props
-      const url_id = window.location.search.substring(1).split("id=")[1];
       try {
         const client = await this.$axios.$get(
-          `${API_URL}${ROUTE_GET_CLIENT}/${url_id}`
+          `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`
         );
         this.name = client.first_name;
-        this.mail = client.address;
+        this.mail = client.mail;
         this.phone = client.phone;
         this.address = client.address;
         this.postalCode = client.postal_code;
@@ -287,18 +311,23 @@ export default {
         throw e;
       }
     },
-    async submitForm() {
+    async submitForm(event) {
+      event.preventDefault();
+
       try {
         const data_post = {
           first_name: this.name,
           mail: this.mail,
           phone: this.phone,
           address: this.address,
-          postalCode: this.postalCode,
+          postal_code: this.postalCode,
           city: this.city,
           country: this.country,
         };
-        //await createClient(data_post);
+        await this.$axios.$put(
+          `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`,data_post
+        );
+        this.$router.push('/listClient')
       } catch (e) {
         this.errors.push(e.message);
       }
@@ -336,6 +365,11 @@ body {
     justify-content: center;
     flex-direction: column;
   }
+}
+
+.width100{
+  width: 100%;
+
 }
 tbody div {
   overflow: scroll;
