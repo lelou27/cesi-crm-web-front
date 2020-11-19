@@ -95,6 +95,11 @@ export default {
           icon: "plus",
           to: { name: "AddClient" },
         },
+        {
+          title: "Unités et caractéristiques",
+          icon: "plus",
+          to: { name: "unitesCaracteristiques" },
+        },
       ],
     };
   },

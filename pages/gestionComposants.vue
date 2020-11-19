@@ -177,14 +177,33 @@ export default {
       } 
       this.data.push(composantObj);
     },
-    async deleteComposant(){
-      try {
-            console.log(this.selected)
+    deleteComposant(){
+      const deleteComposantApi = async () => {
+        try {
             await this.$axios.$delete(`${API_URL}/composant/${this.selected._id}`);
             this.data = await this.$axios.$get(`${API_URL}/composant`);
         } catch (e) {
           return new Error("Impossible de supprimer le composant.");
         }
+      };
+        this.$buefy.dialog.confirm({
+          message: 'Voulez-vous supprimer ce composant?',
+          onConfirm: () => {
+            try {
+              this.$buefy.toast.open({
+                message: "Suppression effectuée",
+                type: "is-success",
+              });
+              deleteComposantApi();
+            }
+            catch(e) {
+              this.$buefy.toast.open({
+                message: e.message,
+                type: "is-danger",
+              });
+            }
+          }
+        })
     }
   },
 };

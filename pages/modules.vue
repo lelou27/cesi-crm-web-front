@@ -79,7 +79,10 @@
         </b-input>
       </b-field>
       <span>
-        <b-dropdown aria-role="list">
+        <b-select aria-role="list" v-model="caracteristiques" placeholder="Caractéristiques">
+          <option v-for="carac in dataCarac">{{carac.nomCaracteristique}}</option>
+        </b-select>
+        <!-- <b-dropdown aria-role="list">
           <button
             class="button is-dark btnCombo"
             slot="trigger"
@@ -91,7 +94,7 @@
           <b-dropdown-item aria-role="listitem"
             >Hauteur-Longueur</b-dropdown-item
           >
-        </b-dropdown>
+        </b-dropdown> -->
         <b-dropdown aria-role="list">
           <button
             class="button is-dark btnCombo"
@@ -151,6 +154,7 @@
 </template>
 
 <script>
+import { API_URL } from "@/constants/contants";
 export default {
   data() {
     return {
