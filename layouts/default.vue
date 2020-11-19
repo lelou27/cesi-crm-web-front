@@ -97,7 +97,7 @@ export default {
         },
         {
           title: "Unités et caractéristiques",
-          icon: "plus",
+          icon: "ruler",
           to: { name: "unitesCaracteristiques" },
         },
       ],
