@@ -1,6 +1,8 @@
 <template>
   <section class="middle">
-    <div class="title">Détail client</div>
+    <div class="title">
+    <h1>Détail client</h1>
+    </div>
     <div class="columns">
       <div class="column is-7">
         <section class="form">
@@ -141,8 +143,19 @@
               >
               </b-input>
             </b-field>
+
             <div class="columns">
-              <div class="column is-4">
+              <div class="buttons">
+                <div class="column is-3">
+              <b-button size="is-medium"
+                        tag="router-link"
+                        icon-left="plus"
+                        to="/listClient"
+                        type="is-info">
+                Liste Client
+              </b-button>
+                </div>
+              <div class="column is-3">
                 <b-field>
                   <b-button
                     id="edit_btn"
@@ -153,7 +166,7 @@
                   </b-button>
                 </b-field>
               </div>
-              <div class="column is-4">
+              <div class="column is-3">
                 <b-field>
                   <b-button
                     id="cancel_btn"
@@ -164,7 +177,7 @@
                   </b-button>
                 </b-field>
               </div>
-              <div class="column is-4">
+              <div class="column is-3">
                 <b-field>
                   <b-input
                     id="validate_btn"
@@ -172,6 +185,7 @@
                     type="submit"
                   ></b-input>
                 </b-field>
+              </div>
               </div>
             </div>
           </form>
@@ -297,7 +311,12 @@ export default {
 @import "~bulma/sass/utilities/_all";
 
 .title {
+  width: 100%;
   text-align: center;
+}
+.title h1 {
+  font-weight: bold;
+  margin: 2rem;
 }
 
 body {
