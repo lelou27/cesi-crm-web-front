@@ -6,12 +6,12 @@
 }
 
 .title {
-	margin-top: 5%;
+  margin-top: 5%;
 }
 
 .saisie {
   display: flex;
-  flex-direction: justify-content;
+  //flex-direction: justify-content;
   margin-right: 2em;
   margin-top: 5%;
 
@@ -19,16 +19,16 @@
     width: 50%;
   }
 
-  .btnCombo{
-  	width: 15vw;
+  .btnCombo {
+    width: 15vw;
   }
 
   .mesure {
-  	width: 25%;
+    width: 25%;
   }
 
   .smallButtons {
-  	width: 2.5vw;
+    width: 2.5vw;
   }
 
   justify-content: space-between;
@@ -46,7 +46,7 @@
     width: 4vw;
     height: 8vh;
     font-size: 1.5rem;
-    color: #FFF;
+    color: #fff;
 
     &:hover {
       background-color: $grey-dark;
@@ -54,7 +54,7 @@
   }
 }
 .tableGammes {
-	margin-top: 5%;
+  margin-top: 5%;
 }
 </style>
 <template>
@@ -72,56 +72,74 @@
           icon="account"
           icon-right="close-circle"
           icon-right-clickable
-          @icon-right-click="clearName"
+          icon-right-click="close-circle"
           required
           rounded
         >
         </b-input>
       </b-field>
-       <span>
-	      <b-dropdown aria-role="list">
-	        <button class="button is-dark btnCombo" slot="trigger" slot-scope="{ active }">
-	          <span class="caracCombo">Caractéristiques</span>
-	          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-	        </button>
-	        <b-dropdown-item aria-role="listitem">Hauteur-Longueur</b-dropdown-item>
-	      </b-dropdown>
-	      <b-dropdown aria-role="list">
-	        <button class="button is-dark btnCombo" slot="trigger" slot-scope="{ active }">
-	          <span class="unitéCombo">Unité d'usage</span>
-	          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-	        </button>
-	        <b-dropdown-item aria-role="listitem">Mètre linéaire</b-dropdown-item>
-	      </b-dropdown>
-  		</span>
+      <span>
+        <b-dropdown aria-role="list">
+          <button
+            class="button is-dark btnCombo"
+            slot="trigger"
+            slot-scope="{ active }"
+          >
+            <span class="caracCombo">Caractéristiques</span>
+            <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
+          </button>
+          <b-dropdown-item aria-role="listitem"
+            >Hauteur-Longueur</b-dropdown-item
+          >
+        </b-dropdown>
+        <b-dropdown aria-role="list">
+          <button
+            class="button is-dark btnCombo"
+            slot="trigger"
+            slot-scope="{ active }"
+          >
+            <span class="unitéCombo">Unité d'usage</span>
+            <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
+          </button>
+          <b-dropdown-item aria-role="listitem">Mètre linéaire</b-dropdown-item>
+        </b-dropdown>
+      </span>
     </div>
     <div class="saisie">
-  			<b-dropdown aria-role="list">
-	        <button class="button is-dark btnCombo" slot="trigger" slot-scope="{ active }">
-	          <span class="unitéCombo">Composants</span>
-	          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-	        </button>
-	        <b-dropdown-item aria-role="listitem">Mur en bois</b-dropdown-item>
-	      </b-dropdown>
-	      <b-field class="titleInputMesure mesure">
-	        <b-input
-	          placeholder="Mesure"
-	          v-model="name"
-	          type="text"
-	          icon="account"
-	          icon-right="close-circle"
-	          icon-right-clickable
-	          @icon-right-click="clearName"
-	          required
-	          rounded
-	        >
-	        </b-input>
-      	  </b-field>
-      	  <span>
-		    <b-button type="is-dark"><i class="fa fa-plus"></i></b-button>
-		    <b-button type="is-dark"><i class="fa fa-minus"></i></b-button>
-		  </span>
-  		<b-table class="tableComposants" :data="dataComposants" :columns="columnsComposants"></b-table>
+      <b-dropdown aria-role="list">
+        <button
+          class="button is-dark btnCombo"
+          slot="trigger"
+          slot-scope="{ active }"
+        >
+          <span class="unitéCombo">Composants</span>
+          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
+        </button>
+        <b-dropdown-item aria-role="listitem">Mur en bois</b-dropdown-item>
+      </b-dropdown>
+      <b-field class="titleInputMesure mesure">
+        <b-input
+          placeholder="Mesure"
+          v-model="name"
+          type="text"
+          icon="account"
+          icon-right="close-circle"
+          icon-right-clickable
+          icon-right-click="close-circle"
+          required
+          rounded
+        >
+        </b-input>
+      </b-field>
+      <span>
+        <b-button type="is-dark"><i class="fa fa-plus"></i></b-button>
+        <b-button type="is-dark"><i class="fa fa-minus"></i></b-button>
+      </span>
+      <b-table
+        class="tableComposants"
+        :data="dataComposants"
+        :columns="columnsComposants"
+      ></b-table>
     </div>
     <div class="boutons">
       <b-button type="is-success"><i class="fa fa-check"></i></b-button>
@@ -133,39 +151,52 @@
 </template>
 
 <script>
-	export default {
-        data() {
-            return {
-                data: [
-                    { 'nomModule': 'Nullos', 'caractéristiques': 'Hauteur-Longueur', 'unitéUsage' : 'm²'},
-                    { 'nomModule': 'Bof', 'caractéristiques': 'Hauteur-Longueur', 'unitéUsage' : 'm²'},
-                    { 'nomModule': 'Joli module <3', 'caractéristiques': 'Hauteur-Longueur', 'unitéUsage' : 'm²'},
-                ],
-                dataComposants: [
-                    { 'nomComposant': 'Composant 1' },
-                    { 'nomComposant': 'Composant 2' },
-                ],
-                columns: [
-                    {
-                        field: 'nomModule',
-                        label: 'Nom du module',
-                    },
-                    {
-                        field: 'caractéristiques',
-                        label: 'Caractéristiques',
-                    },
-                    {
-                        field: 'unitéUsage',
-                        label: 'Unité d\'usage',
-                    }
-                ],
-                columnsComposants: [
-                	{
-                		field: 'nomComposant',
-                		label: 'Nom du composant',
-                	}
-                ]
-            }
+export default {
+  data() {
+    return {
+      data: [
+        {
+          nomModule: "Nullos",
+          caractéristiques: "Hauteur-Longueur",
+          unitéUsage: "m²",
         },
-    }
+        {
+          nomModule: "Bof",
+          caractéristiques: "Hauteur-Longueur",
+          unitéUsage: "m²",
+        },
+        {
+          nomModule: "Joli module <3",
+          caractéristiques: "Hauteur-Longueur",
+          unitéUsage: "m²",
+        },
+      ],
+      dataComposants: [
+        { nomComposant: "Composant 1" },
+        { nomComposant: "Composant 2" },
+      ],
+      columns: [
+        {
+          field: "nomModule",
+          label: "Nom du module",
+        },
+        {
+          field: "caractéristiques",
+          label: "Caractéristiques",
+        },
+        {
+          field: "unitéUsage",
+          label: "Unité d'usage",
+        },
+      ],
+      columnsComposants: [
+        {
+          field: "nomComposant",
+          label: "Nom du composant",
+        },
+      ],
+      name: null,
+    };
+  },
+};
 </script>

@@ -1,17 +1,10 @@
 <style>
-.navbar-item {
-  padding: 0.3rem 0.5rem;
-}
 aside {
   border-right: 1px solid grey;
-}
-.main-content {
-  height: 100vh;
 }
 </style>
 
 <template>
-  <!-- <div v-if="1 === 1"> -->
   <div v-if="user.username">
     <Navigation />
 
@@ -38,7 +31,13 @@ aside {
 </template>
 
 <script>
+import Authentication from "~/components/Auth/Authentification";
 export default {
+
+  components: {
+    Authentication,
+  },
+
   computed: {
     user() {
       if (
@@ -74,12 +73,27 @@ export default {
         {
           title: "Composants",
           icon: "tools",
-          to: { name: "composants" },
+          to: { name: "gestionComposants" },
         },
         {
           title: "Modules",
           icon: "border-all",
           to: { name: "modules" },
+        },
+        {
+          title: "Devis",
+          icon: "file-document-edit-outline",
+          to: { name: "crea_projet" },
+        },
+        {
+          title: "Utilisateurs",
+          icon: "account",
+          to: { name: "users" },
+        },
+        {
+          title: "Ajouter un client",
+          icon: "plus",
+          to: { name: "AddClient" },
         },
       ],
     };
