@@ -9,10 +9,11 @@ export const mutations = {
     state.access_token = user.access_token;
     state.role = user.role;
   },
-  remove(state, username) {
-    if (state.username === username) {
+  remove(state, user) {
+    if (state.username === user.user.username) {
       state.username = "";
       state.access_token = "";
+      state.role = "";
     }
   },
 };

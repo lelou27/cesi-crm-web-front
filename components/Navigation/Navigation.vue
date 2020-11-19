@@ -41,9 +41,16 @@
             }}
           </nuxt-link>
         </p>
-        <nuxt-link to="/" exact-active-class="is-active" class="navbar-icon">
-          <b-icon icon="account" size="is-medium"> </b-icon>
+        <nuxt-link to="/profile" exact-active-class="is-active" class="navbar-icon">
+          <b-tooltip label="Votre compte" position="is-left" type="is-light">
+            <b-icon icon="account" size="is-medium"></b-icon>
+          </b-tooltip>
         </nuxt-link>
+        <span class="navbar-icon" @click="logout">
+          <b-tooltip label="Se déconnecter" position="is-left" type="is-light">
+            <b-icon icon="power-standby" size="is-medium"></b-icon>
+          </b-tooltip>
+        </span>
       </b-navbar-item>
     </template>
   </b-navbar>
@@ -52,5 +59,17 @@
 <script>
 export default {
   name: "Navigation",
+  methods: {
+    logout() {
+      try {
+        this.$store.commit("user/remove", {
+          user: this.$store.state.user,
+        });
+        this.$cookies.remove("user-params");
+      } catch (e) {
+        throw new Error("Impossible de se déconnecter");
+      }
+    },
+  },
 };
 </script>

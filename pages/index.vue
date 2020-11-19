@@ -1,22 +1,21 @@
 <template>
   <section class="section">
-    <div class="columns is-mobile">
-      <card title="Free" icon="github">
-        Open source on <a href="https://github.com/buefy/buefy"> GitHub </a>
-      </card>
-
-      <card title="Responsive" icon="cellphone-link">
-        <b class="has-text-grey"> Every </b> component is responsive
-      </card>
-
-      <card title="Modern" icon="alert-decagram">
-        Built with <a href="https://vuejs.org/"> Vue.js </a> and
-        <a href="http://bulma.io/"> Bulma </a>
-      </card>
-
-      <card title="Lightweight" icon="arrange-bring-to-front">
-        No other internal dependency
-      </card>
+    <div>
+      <div class="text-center title-index">
+        <h1>Madera, tout un savoir</h1>
+      </div>
+      <b-carousel :indicator-inside="false">
+        <b-carousel-item v-for="(item, i) in 6" :key="i">
+          <span class="image">
+            <img :src="getImgUrl(i)" />
+          </span>
+        </b-carousel-item>
+        <template slot="indicators" slot-scope="props">
+          <span class="al image">
+            <img :src="getImgUrl(props.i)" :title="props.i" />
+          </span>
+        </template>
+      </b-carousel>
     </div>
   </section>
 </template>
@@ -26,9 +25,40 @@ import Card from "~/components/Card";
 
 export default {
   name: "HomePage",
-
   components: {
     Card,
   },
+  data() {
+    return {
+      images: ["~assets/maderaMaisons/devise.jpg"],
+    };
+  },
+  methods: {
+    getImgUrl(value) {
+      return `https://picsum.photos/id/43${value}/1230/500`;
+    },
+  },
 };
 </script>
+
+<style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+.is-active .al img {
+  filter: grayscale(0%);
+}
+.al img {
+  filter: grayscale(100%);
+}
+
+.title-index {
+  width: 100%;
+  text-align: center;
+
+  h1 {
+    margin-bottom: 1rem;
+    font-size: 3rem;
+    font-family: 'Great Vibes', cursive;
+  }
+}
+</style>
