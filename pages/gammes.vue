@@ -51,6 +51,25 @@
 </style>
 <template>
   <section class="page">
+    <div class="errors" v-if="error !== null">
+      <b-notification
+        key="error"
+        type="is-danger m-3"
+        :closable="false"
+        role="alert"
+      >
+        {{ error.message }}
+      </b-notification>
+    </div>
+
+    <div v-if="gammes === null && !error">
+      <b-loading
+        :is-full-page="false"
+        v-model="loading"
+        :can-cancel="true"
+      ></b-loading>
+    </div>
+
     <div class="title text-center">
       <h1 class="text-center">Gammes</h1>
     </div>
@@ -59,7 +78,7 @@
       <b-field class="titleInputComposant">
         <b-input
           placeholder="Nom de la gamme"
-          v-model="name"
+          v-model="gamme.nomGamme"
           type="text"
           icon="account"
           icon-right="close-circle"
@@ -90,32 +109,26 @@
     </div>
 
     <div class="boutons">
-      <b-button type="is-success"><i class="fa fa-check"></i></b-button>
+      <b-button type="is-success" @click="createGamme"><i class="fa fa-check"></i></b-button>
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
-    <b-table class="tableGammes" :data="data" :columns="columns"></b-table>
+    <b-table class="tableGammes" :data="gammes" :columns="columns"></b-table>
   </section>
 </template>
 
 <script>
+import { API_URL } from "@/constants/contants";
+
 export default {
   data() {
     return {
-      data: [
-        { nomGamme: "Nullos", modules: "Module1" },
-        { nomGamme: "Bof", modules: "Module2" },
-        { nomGamme: "Lourd", modules: "Module3" },
-      ],
+      gammes: null,
       dataModules: [{ nomModule: "Nullos" }, { nomModule: "Lourd" }],
       columns: [
         {
           field: "nomGamme",
           label: "Nom de la gamme",
-        },
-        {
-          field: "modules",
-          label: "Modules",
         },
       ],
       columnsModules: [
@@ -124,8 +137,42 @@ export default {
           label: "Nom du module",
         },
       ],
+      gamme: {
+        nomGamme: "",
+      },
+      formError: null,
+      loading: false,
+      error: null,
       name: null,
     };
+  },
+
+  methods: {
+    async createGamme(event) {
+      event.preventDefault();
+
+      this.formError = null;
+      if (!this.gamme.nomGamme) {
+        this.formError = "Tout les champs sont requis";
+      }
+
+      try {
+        await this.$axios.$post(`${API_URL}/gamme`, this.gamme);
+        await this.$router.push("gammes");
+      } catch (e) {
+        this.formError = e.message;
+      }
+    }
+  },
+
+  async fetch() {
+    console.log(this.gammes)
+    this.loading = true;
+    try {
+      this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
+    } catch (e) {
+      this.error = e;
+    }
   },
 };
 </script>

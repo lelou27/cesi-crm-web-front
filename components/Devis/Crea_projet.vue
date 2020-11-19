@@ -185,10 +185,5 @@ export default {
       this.error = e;
     }
   },
-
-{
-  modulename: 'test',
-    composants: ['id1', 'id2']
-}
 };
 </script>
