@@ -32,7 +32,7 @@
       </b-notification>
     </div>
 
-    <div v-if="clients === null && !error">
+    <div v-if="clients === null && error === null">
       <b-loading
         :is-full-page="false"
         v-model="loading"
@@ -141,11 +141,26 @@ export default {
         today.getDate()
       ),
       devis: {
-        nomProjet: "",
-        referenceProjet: "",
-        client: null,
-        dateDevis: null,
-        dateSelected: null,
+        nomProjet:
+          this.$store.state.devis && this.$store.state.devis.nomProjet
+            ? this.$store.state.devis.nomProjet
+            : "",
+        referenceProjet:
+          this.$store.state.devis && this.$store.state.devis.referenceProjet
+            ? this.$store.state.devis.referenceProjet
+            : "",
+        client:
+          this.$store.state.devis && this.$store.state.devis.client
+            ? this.$store.state.devis.client
+            : "",
+        dateDevis:
+          this.$store.state.devis && this.$store.state.devis.dateDevis
+            ? this.$store.state.devis.dateDevis
+            : "",
+        dateSelected:
+          this.$store.state.devis && this.$store.state.devis.dateDevis
+            ? this.$store.state.devis.dateDevis
+            : null,
       },
       formError: null,
       loading: false,
@@ -164,13 +179,8 @@ export default {
         this.formError = "Tout les champs sont requis";
       }
 
-      const dateFormated = this.$moment(this.devis.dateSelected).format(
-        "DD/MM/YYYY"
-      );
-
-      this.devis.dateDevis = dateFormated;
       try {
-        await this.$axios.$post(`${API_URL}/devis`, this.devis);
+        await this.$store.commit("devis/addDevis", this.devis);
         await this.$router.push("selec_gamme");
       } catch (e) {
         this.formError = e.message;
@@ -179,6 +189,7 @@ export default {
   },
   async fetch() {
     this.loading = true;
+
     try {
       this.clients = await this.$axios.$get(`${API_URL}/client`);
     } catch (e) {

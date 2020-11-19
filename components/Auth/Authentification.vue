@@ -98,7 +98,6 @@ body {
 
 <script>
 import { logUser } from "../../services/AuthService.js";
-import { API_URL } from "@/constants/contants";
 
 export default {
   name: "Authentication",
