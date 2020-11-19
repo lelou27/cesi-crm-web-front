@@ -1,114 +1,194 @@
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/_all";
 
-  table td:not([align]), table th:not([align]) {
-    text-align: inherit;
-    padding: 1%;
-  }
+.DivButton {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
 
-  .DivButton {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
+.button {
+  margin-top: 3%;
+  width: 50%;
+}
 
-  table{
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
-    margin-top: 5%;
-    width: 50%;
-  }
-
-  section {
-    width: 100%;
-  }
-
-  .labelName{
-    padding-top: 2.5%;
-    text-align: left;
-  }
-
-  .Label {
-    width: 30%;
-  }
-
-  .SelectClient {
-    width : 200%;
-  }
-
-  .button{
-    margin-top: 3%;
-    width: 50%;
-  }
+.form-devis {
+  width: 60%;
+  margin-left: 19%;
+}
 </style>
 
 <template>
   <section>
-    <table>
-      <tr>
-        <td>
-          <b-field label="Nom du projet :" class="labelName">
-          </b-field>
-        </td>
-        <td>
-          <b-input rounded></b-input>
-        </td>
-      </tr>
-      <tr>
-        <td class="Label">
-          <b-field label="Référence du projet : " class="labelName">
-          </b-field>
-        </td>
-        <td>
-          <b-input rounded></b-input>
-        </td>
-      </tr>
-      <tr>
-        <td class="Label">
-          <b-field label="Client : " class="labelName">
-          </b-field>
-        </td>
-        <td>
-          <b-select placeholder="Selectionner un client" rounded expanded>
-            <option value="flint">Flint</option>
-            <option value="silver">Silver</option>
+    <div class="errors" v-if="error !== null">
+      <b-notification
+        key="error"
+        type="is-danger m-3"
+        :closable="false"
+        role="alert"
+      >
+        {{ error.message }}
+      </b-notification>
+    </div>
+
+    <div v-if="clients === null && !error">
+      <b-loading
+        :is-full-page="false"
+        v-model="loading"
+        :can-cancel="true"
+      ></b-loading>
+    </div>
+
+    <div v-if="clients !== null && error === null">
+      <div class="form-devis">
+        <div class="errors" v-if="formError !== null">
+          <b-notification
+            key="error"
+            type="is-danger m-3"
+            :closable="false"
+            role="alert"
+          >
+            {{ formError }}
+          </b-notification>
+        </div>
+
+        <b-field label="Nom du projet" label-position="on-border" class="mt-6">
+          <b-input
+            type="text"
+            rounded
+            v-model="devis.nomProjet"
+            required
+          ></b-input>
+        </b-field>
+
+        <b-field
+          label="Référence du projet"
+          label-position="on-border"
+          class="mt-5"
+        >
+          <b-input
+            type="text"
+            rounded
+            v-model="devis.referenceProjet"
+            required
+          ></b-input>
+        </b-field>
+
+        <b-field
+          label="Client"
+          class="mt-5"
+          required
+          label-position="on-border"
+        >
+          <b-select
+            placeholder="Selectionner un client"
+            rounded
+            expanded
+            v-model="devis.client"
+            required
+            horizontal
+          >
+            <option v-for="cli in clients" :value="cli._id" :key="cli._id">
+              {{ cli.first_name }}
+            </option>
           </b-select>
-        </td>
-      </tr>
-      <tr>
-        <td class="Label">
-          <b-field label="Date : " class="labelName">
-          </b-field>
-        </td>
-        <td>
+        </b-field>
+
+        <b-field label="Date " class="mt-5" label-position="on-border">
           <b-datepicker
             placeholder="Selectionner une Date"
-            :min-date="minDate"
-            :max-date="maxDate" rounded>
+            rounded
+            v-model="devis.dateSelected"
+          >
           </b-datepicker>
-        </td>
-      </tr>
-    </table>
-  <div class="DivButton">
-    <nuxt-link to="/selec_gamme"><b-button type="is-dark" size="is-large" class="button" @click="">Valider</b-button></nuxt-link>
-  </div>
+        </b-field>
+      </div>
+
+      <div class="DivButton">
+        <b-button
+          type="is-dark"
+          size="is-large"
+          class="button"
+          @click="createDevis"
+        >
+          Valider
+        </b-button>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
+import { API_URL } from "@/constants/contants";
+
 export default {
   name: "CreaProjet",
 
   data() {
-    const today = new Date()
+    const today = new Date();
 
     return {
-      date: new Date(),
-      minDate: new Date(today.getFullYear() - 80, today.getMonth(), today.getDate()),
-      maxDate: new Date(today.getFullYear() + 30, today.getMonth(), today.getDate())
+      clients: null,
+      minDate: new Date(
+        today.getFullYear() - 80,
+        today.getMonth(),
+        today.getDate()
+      ),
+      maxDate: new Date(
+        today.getFullYear() + 30,
+        today.getMonth(),
+        today.getDate()
+      ),
+      devis: {
+        nomProjet: "",
+        referenceProjet: "",
+        client: null,
+        dateDevis: null,
+        dateSelected: null,
+      },
+      formError: null,
+      loading: false,
+      error: null,
+    };
+  },
+  methods: {
+    async createDevis(event) {
+      event.preventDefault();
+      this.formError = null;
+      if (
+        !this.devis.client ||
+        (!this.devis.dateDevis && !this.devis.nomProjet) ||
+        !this.devis.referenceProjet
+      ) {
+        this.formError = "Tout les champs sont requis";
+      }
+
+      const dateFormated = this.$moment(this.devis.dateSelected).format(
+        "DD/MM/YYYY"
+      );
+
+      this.devis.dateDevis = dateFormated;
+      try {
+        await this.$axios.$post(`${API_URL}/devis`, this.devis);
+        await this.$router.push("selec_gamme");
+      } catch (e) {
+        this.formError = e.message;
+      }
+    },
+  },
+  async fetch() {
+    this.loading = true;
+    try {
+      this.clients = await this.$axios.$get(`${API_URL}/client`);
+    } catch (e) {
+      this.error = e;
     }
-  }
+  },
+
+{
+  modulename: 'test',
+    composants: ['id1', 'id2']
+}
 };
 </script>
