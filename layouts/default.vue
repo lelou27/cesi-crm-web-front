@@ -91,9 +91,9 @@ export default {
           to: { name: "users" },
         },
         {
-          title: "Ajouter un client",
-          icon: "plus",
-          to: { name: "AddClient" },
+          title: "Client",
+          icon: "account-cash",
+          to: { name: "ListClient" },
         },
       ],
     };

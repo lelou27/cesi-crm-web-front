@@ -1,6 +1,8 @@
 <template>
   <section class="middle">
-    <div class="title">Ajout d'un client</div>
+    <div class="title">
+      <h1>Ajout d'un client</h1>
+    </div>
     <form action="" method="post" @submit="submitForm" class="form">
       <div class="errors" v-if="errors.length">
         <b-notification
@@ -124,10 +126,20 @@
         >
         </b-input>
       </b-field>
-
+      <div class="buttons">
+      <b-button size="is-medium"
+                tag="router-link"
+                icon-left="plus"
+                to="/listClient"
+                type="is-info">
+          Liste Client
+        </b-button>
       <b-field class="submit-button">
-        <b-input type="submit"></b-input>
+        <b-input type="submit"
+                 tag="router-link"
+                 to="/listClient"></b-input>
       </b-field>
+      </div>
     </form>
   </section>
 </template>
@@ -165,6 +177,7 @@ export default {
 
         try {
           await this.$axios.post(`${API_URL}${ROUTE_CREATE_CLIENT}`, data_post);
+          this.$router.push('/listClient')
         } catch (e) {
           throw e;
         }
@@ -180,7 +193,12 @@ export default {
 @import "~bulma/sass/utilities/_all";
 
 .title {
+  width: 100%;
   text-align: center;
+}
+.title h1 {
+  font-weight: bold;
+  margin: 2rem;
 }
 
 body {
