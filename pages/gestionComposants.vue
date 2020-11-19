@@ -106,7 +106,6 @@
       <b-button type="is-success" @click="insertComposant"
         ><i class="fa fa-check"></i
       ></b-button>
-      <!-- <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button> -->
       <b-button type="is-danger" @click="deleteComposant"><i class="fa fa-minus-circle"></i></b-button>
     </div>
     <div v-if="data !== null">

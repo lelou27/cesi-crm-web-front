@@ -54,6 +54,7 @@
 }
 .tableComposants {
 	margin-top: 5%;
+  width: 90%;
 }
 </style>
 <template>
@@ -175,7 +176,7 @@ import { API_URL } from "@/constants/contants";
         },
 
         async fetch(){
-          // this.loading = true;
+          this.loading = true;
             try {
               this.dataCaracteristiques = await this.$axios.$get(`${API_URL}/caracteristique`);
               this.dataUnites = await this.$axios.$get(`${API_URL}/unite`);
@@ -183,9 +184,83 @@ import { API_URL } from "@/constants/contants";
             catch(e) {
               this.error = e;
             }
-            // this.loading = false;
+            this.loading = false;
         },
         methods: {
+          deleteCaracteristique(){
+            const deleteCaracteristiqueApi = async () => {
+              try {
+                  await this.$axios.$delete(`${API_URL}/caracteristique/${this.selected._id}`);
+                  this.dataCaracteristiques = await this.$axios.$get(`${API_URL}/caracteristique`);
+              } catch (e) {
+                return new Error("Impossible de supprimer la caracteristique.");
+              }
+            };
+              this.$buefy.dialog.confirm({
+                message: 'Voulez-vous supprimer cette caractéristique?',
+                onConfirm: () => {
+                  try {
+                    this.$buefy.toast.open({
+                      message: "Suppression effectuée",
+                      type: "is-success",
+                    });
+                    deleteCaracteristiqueApi();
+                  }
+                  catch(e) {
+                    this.$buefy.toast.open({
+                      message: e.message,
+                      type: "is-danger",
+                    });
+                  }
+                }
+              })
+          },
+          deleteUnite(){
+            const deleteUniteApi = async () => {
+              try {
+                  await this.$axios.$delete(`${API_URL}/unite/${this.selected._id}`);
+                  this.dataUnites = await this.$axios.$get(`${API_URL}/unite`);
+              } catch (e) {
+                return new Error("Impossible de supprimer l\'unité.");
+              }
+            };
+              this.$buefy.dialog.confirm({
+                message: 'Voulez-vous supprimer cette unité?',
+                onConfirm: () => {
+                  try {
+                    this.$buefy.toast.open({
+                      message: "Suppression effectuée",
+                      type: "is-success",
+                    });
+                    deleteUniteApi();
+                  }
+                  catch(e) {
+                    this.$buefy.toast.open({
+                      message: e.message,
+                      type: "is-danger",
+                    });
+                  }
+                }
+              })
+          },
+          insertCaracteristique(){
+            this.$axios.$post(`${API_URL}/caracteristique`, {
+            nomCaracteristique: this.nomCaracteristique,
+            });
+            const caracteristiqueObj = {
+              nomCaracteristique: this.nomCaracteristique,
+            } 
+            this.dataCaracteristiques.push(caracteristiqueObj);
+            },
+          insertUnite(){
+            this.$axios.$post(`${API_URL}/unite`, {
+            uniteMesure: this.nomUnite,
+          });
+          const uniteObj = {
+            uniteMesure: this.uniteMesure,
+          } 
+          this.dataUnites.push(uniteObj);
+          }
         }
         
     }
