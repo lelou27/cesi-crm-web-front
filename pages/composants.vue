@@ -153,7 +153,7 @@ import { API_URL } from "@/constants/contants";
         },
         methods: {
           insertComposant(){
-          this.$axios.$post(`${API_URL}/composant`,{nomComposant: this.nomComposant,uniteMesure: this.uniteMesure, nomCaracteristique: this.nomCaracteristique})
+          this.$axios.$post(`${API_URL}/composant`,{nomComposant: this.nomComposant,unité: this.uniteMesure, nomCaracteristique: this.caracteristiques})
           // console.log(this.nomComposant);
           // console.log(this.uniteMesure);
           }
