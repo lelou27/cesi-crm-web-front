@@ -264,6 +264,7 @@ export default {
       errors: [],
     };
   },
+  //méthode qui premet de récupérer un client durant le chargement de la page
   async fetch() {
     try {
       const client = await this.$axios.$get(
@@ -300,6 +301,7 @@ export default {
     }
   },
   methods: {
+    //méthode qui permet de supprimer un client avec une modal de confirmation et revoie vers liste devis
     deleteUser() {
       const deleteClientApi = async () => {
         try {
@@ -329,6 +331,7 @@ export default {
         },
       });
     },
+    //méthode qui permet de désactiver les champs et qui remet à jour les champs
     async disabled_fields() {
       this.disabled = !this.disabled;
       try {
@@ -346,6 +349,7 @@ export default {
         throw e;
       }
     },
+    //méthode qui permet de mettre à jour un client et revoie vers liste devis
     async submitForm(event) {
       event.preventDefault();
 
