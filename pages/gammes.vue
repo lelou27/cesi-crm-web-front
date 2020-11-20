@@ -23,6 +23,12 @@
     width: 2.5vw;
   }
 
+  .modulesSelect{
+    display: flex;
+    justify-content: space-between;
+    width: 15vw;
+  }
+
   justify-content: space-between;
 }
 
@@ -88,34 +94,40 @@
         >
         </b-input>
       </b-field>
-      <span>
-        <b-dropdown aria-role="list">
-          <button class="button is-dark" slot="trigger" slot-scope="{ active }">
-            <span class="titleCombo">Module</span>
-            <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-          </button>
-          <b-dropdown-item aria-role="listitem">Section 1</b-dropdown-item>
-        </b-dropdown>
-
-        <b-button type="is-dark"><i class="fa fa-plus"></i></b-button>
-        <b-button type="is-dark"><i class="fa fa-minus"></i></b-button>
-      </span>
+      <div class="modulesSelect">
+        <b-select
+          aria-role="list"
+          v-model="nomModule"
+          placeholder="Modules"
+          class="selectModules"
+        >
+          <option v-for="module in modulesList">
+            {{ module.nomModule }}
+          </option>
+        </b-select>
+        <span>
+          <b-button type="is-dark" @click="insertModule"><i class="fa fa-plus"></i></b-button>
+          <b-button type="is-dark" @click="removeModule"><i class="fa fa-minus"></i></b-button>
+        </span>
+      </div>
+      <div v-if="dataModules !== null">
       <b-table
         class="tableModules"
         :data="dataModules"
         :columns="columnsModules"
-      ></b-table>
+        :selected.sync="selected2"
+      focusable></b-table>
+    </div>
     </div>
 
     <div class="boutons">
       <b-button type="is-success" @click="createGamme"
         ><i class="fa fa-check"></i
       ></b-button>
-      <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
-      <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
+      <b-button type="is-danger" @click="deleteGamme"><i class="fa fa-minus-circle"></i></b-button>
     </div>
     <div v-if="gammes">
-      <b-table class="tableGammes" :data="gammes" :columns="columns"></b-table>
+      <b-table class="tableGammes" :data="gammes" :columns="columns" :selected.sync="selected" focusable></b-table>
     </div>
   </section>
 </template>
@@ -127,7 +139,11 @@ export default {
   data() {
     return {
       gammes: null,
-      dataModules: [{ nomModule: "Nullos" }, { nomModule: "Lourd" }],
+      selected: null,
+      modulesList: null,
+      dataModules: [],
+      nomModule: null,
+      selected2: null,
       columns: [
         {
           field: "nomGamme",
@@ -142,6 +158,9 @@ export default {
       ],
       gamme: {
         nomGamme: "",
+      },
+      module: {
+        nomModule: "",
       },
       formError: null,
       loading: false,
@@ -162,19 +181,59 @@ export default {
       try {
         await this.$axios.$post(`${API_URL}/gamme`, this.gamme);
         await this.$router.push("gammes");
+        this.gammes.push(this.gamme);
       } catch (e) {
         this.formError = e.message;
       }
     },
+    deleteGamme(){
+      const deleteGammeApi = async () => {
+        try {
+            console.log(this.selected._id)
+            await this.$axios.$delete(`${API_URL}/gamme/${this.selected._id}`);
+            this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
+        } catch (e) {
+          return new Error("Impossible de supprimer la gamme.");
+        }
+      };
+        this.$buefy.dialog.confirm({
+          message: 'Voulez-vous supprimer cette gamme?',
+          onConfirm: () => {
+            try {
+              this.$buefy.toast.open({
+                message: "Suppression effectuée",
+                type: "is-success",
+              });
+              deleteGammeApi();
+            }
+            catch(e) {
+              this.$buefy.toast.open({
+                message: e.message,
+                type: "is-danger",
+              });
+            }
+          }
+        })
+    },
+    insertModule(){
+      const moduleAdd = { nomModule: this.nomModule }
+      this.dataModules.push(moduleAdd)
+    },
+    removeModule(){
+      const moduleAdd = { nomModule: this.selected2.nomModule}
+      this.dataModules = this.dataModules.filter((data) => data.nomModule !== this.selected2.nomModule)
+    }
   },
 
   async fetch() {
     this.loading = true;
     try {
       this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
+      this.modulesList = await this.$axios.$get(`${API_URL}/module/all`)
     } catch (e) {
       this.error = e;
     }
   },
+  
 };
 </script>
