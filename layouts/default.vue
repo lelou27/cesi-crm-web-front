@@ -60,11 +60,6 @@ export default {
           to: { name: "index" },
         },
         {
-          title: "Menu des produits",
-          icon: "lightbulb",
-          to: { name: "menuProduits" },
-        },
-        {
           title: "Gammes",
           icon: "window-restore",
           to: { name: "gammes" },

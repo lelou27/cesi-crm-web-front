@@ -98,6 +98,8 @@ body {
 
 <script>
 import { logUser } from "../../services/AuthService.js";
+const fileDownload = () => require("js-file-download");
+import { API_URL } from "@/constants/contants";
 
 export default {
   name: "Authentication",
@@ -128,28 +130,27 @@ export default {
           this.username,
           this.password
         );
+        await this.createLoginCookie(loginAccessToken, role.role);
 
         this.$store.commit("user/addUser", {
           username: this.username,
           access_token: loginAccessToken,
           role: role.role,
         });
-
-        this.createLoginCookie(loginAccessToken, role.role);
       } catch (e) {
         this.errors.push(e.message);
       }
     },
-    createLoginCookie(access_token, role) {
+    async createLoginCookie(access_token, role) {
       try {
         const cookieValue = {
           username: this.username,
           access_token,
           role: role,
         };
-        this.$cookies.set("user-params", cookieValue);
+        await this.$cookies.set("user-params", cookieValue);
       } catch (e) {
-        throw new Error("Impossible de créer le cookie de connextion");
+        throw new Error("Impossible de créer le cookie de connexion");
       }
     },
   },

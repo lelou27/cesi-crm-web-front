@@ -1,7 +1,7 @@
 <template>
   <section class="middle">
     <div class="title">
-    <h1>Détail client</h1>
+      <h1>Détail client</h1>
     </div>
     <div class="columns">
       <div class="column is-7">
@@ -146,7 +146,7 @@
 
             <div class="columns">
               <div class="buttons">
-              <div class="column is-4">
+                <div class="column is-4">
                   <b-button
                     id="edit_btn"
                     @click="disabled_fields"
@@ -154,8 +154,8 @@
                   >
                     Modifier
                   </b-button>
-              </div>
-              <div class="column is-4">
+                </div>
+                <div class="column is-4">
                   <b-button
                     id="cancel_btn"
                     :disabled="disabled"
@@ -163,28 +163,25 @@
                   >
                     Annuler
                   </b-button>
-              </div>
-              <div class="column is-4">
+                </div>
+                <div class="column is-4">
                   <b-input
                     id="validate_btn"
                     :disabled="disabled"
                     type="submit"
                   ></b-input>
-              </div>
+                </div>
               </div>
             </div>
             <div class="columns">
               <div class="buttons">
                 <div class="column is-6">
-                  <b-button tag="router-link"
-                            to="/listClient">
+                  <b-button tag="router-link" to="/listClient">
                     Liste Client
                   </b-button>
                 </div>
                 <div class="column is-6">
-                  <b-button  @click="deleteUser">
-                    Supprimer Client
-                  </b-button>
+                  <b-button @click="deleteUser"> Supprimer Client </b-button>
                 </div>
               </div>
             </div>
@@ -196,12 +193,15 @@
           <b-table :columns="quoteColumns" :data="quoteList"></b-table>
         </div>
         <div>
-          <b-table :columns="billColumns" :data="billList"></b-table>
+          <b-table
+            :columns="billColumns"
+            :data="billList"
+            @click="downloadPdf"
+          ></b-table>
         </div>
       </div>
     </div>
   </section>
-
 </template>
 
 <script>
@@ -262,6 +262,23 @@ export default {
       this.postalCode = client.postal_code;
       this.city = client.city;
       this.country = client.country;
+
+      // await this.$axios.$get(
+      //   `${API_URL}/facture/generateFacture/5fb6e11edce3963258475bbb`
+      // );
+
+      this.$axios({
+        url: `${API_URL}/facture/generateFacture/5fb6e11edce3963258475bbb`,
+        method: "GET",
+        responseType: "blob", // important
+      }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "file.pdf");
+        document.body.appendChild(link);
+        link.click();
+      });
     } catch (e) {
       throw e;
     }
@@ -270,7 +287,9 @@ export default {
     deleteUser() {
       const deleteClientApi = async () => {
         try {
-            await this.$axios.$delete(`${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`);
+          await this.$axios.$delete(
+            `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`
+          );
         } catch (e) {
           return new Error("Impossible de supprimer l'utilsateur.");
         }
@@ -284,7 +303,7 @@ export default {
               type: "is-success",
             });
             deleteClientApi();
-            this.$router.push('/listClient');
+            this.$router.push("/listClient");
           } catch (e) {
             this.$buefy.toast.open({
               message: e.message,
@@ -325,12 +344,27 @@ export default {
           country: this.country,
         };
         await this.$axios.$put(
-          `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`,data_post
+          `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`,
+          data_post
         );
-        this.$router.push('/listClient')
+        this.$router.push("/listClient");
       } catch (e) {
         this.errors.push(e.message);
       }
+    },
+    downloadPdf() {
+      this.$axios({
+        url: `${API_URL}/facture/download`,
+        method: "GET",
+        responseType: "blob", // important
+      }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "file.pdf");
+        document.body.appendChild(link);
+        link.click();
+      });
     },
   },
 };
@@ -367,9 +401,8 @@ body {
   }
 }
 
-.width100{
+.width100 {
   width: 100%;
-
 }
 tbody div {
   overflow: scroll;

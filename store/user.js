@@ -7,6 +7,7 @@ export const mutations = {
     state.role = user.role;
   },
   remove(state, user) {
+    console.log(user);
     if (state.username === user.user.username) {
       state.username = "";
       state.access_token = "";
