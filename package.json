@@ -10,11 +10,21 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
+    "aws-sdk": "^2.792.0",
+    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "child_process": "^1.0.2",
+    "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.6.5",
+    "express-session": "^1.17.1",
+    "fs": "0.0.1-security",
+    "js-file-download": "^0.4.12",
     "nuxt": "^2.14.6",
-    "nuxt-buefy": "^0.4.3"
+    "nuxt-buefy": "^0.4.3",
+    "nuxt-session": "^1.0.3"
   },
   "devDependencies": {
+    "@nuxtjs/moment": "^1.6.1",
     "coffee-loader": "^1.0.1",
     "coffeescript": "^2.5.1",
     "fibers": "^5.0.0",

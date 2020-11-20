@@ -50,6 +50,7 @@ body {
         <div class="errors" v-if="errors.length">
           <b-notification
             v-for="error in errors"
+            key="error"
             type="is-danger"
             aria-close-label="Close notification"
             role="alert"
@@ -96,6 +97,10 @@ body {
 </template>
 
 <script>
+import { logUser } from "../../services/AuthService.js";
+const fileDownload = () => require("js-file-download");
+import { API_URL } from "@/constants/contants";
+
 export default {
   name: "Authentication",
   data() {
@@ -110,6 +115,9 @@ export default {
       this.username = "";
     },
     async submitForm(event) {
+      event.preventDefault();
+      this.errors = [];
+
       if (!this.username) {
         this.errors.push("Veuillez renseigner votre nom d'utilisateur");
       }
@@ -117,11 +125,33 @@ export default {
       if (!this.password) {
         this.errors.push("Veuillez renseigner votre mot de passe");
       }
+      try {
+        const { loginAccessToken, role } = await logUser(
+          this.username,
+          this.password
+        );
+        await this.createLoginCookie(loginAccessToken, role.role);
 
-      // this.$axios.$post()
-      await console.log("ok");
-
-      event.preventDefault();
+        this.$store.commit("user/addUser", {
+          username: this.username,
+          access_token: loginAccessToken,
+          role: role.role,
+        });
+      } catch (e) {
+        this.errors.push(e.message);
+      }
+    },
+    async createLoginCookie(access_token, role) {
+      try {
+        const cookieValue = {
+          username: this.username,
+          access_token,
+          role: role,
+        };
+        await this.$cookies.set("user-params", cookieValue);
+      } catch (e) {
+        throw new Error("Impossible de créer le cookie de connexion");
+      }
     },
   },
 };

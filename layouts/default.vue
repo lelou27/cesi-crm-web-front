@@ -1,11 +1,11 @@
-<style>
-.navbar-item {
-  padding: 0.3rem 0.5rem;
+<style lang="scss">
+aside.section {
+  padding-right: 0.3rem;
 }
 </style>
 
 <template>
-  <div v-if="1 === 3">
+  <div v-if="user.username">
     <Navigation />
 
     <section class="main-content columns">
@@ -31,19 +31,68 @@
 </template>
 
 <script>
+import Authentication from "~/components/Auth/Authentification";
 export default {
+  components: {
+    Authentication,
+  },
+
+  computed: {
+    user() {
+      if (
+        !this.$store.state.user.username &&
+        this.$cookies.get("user-params")
+      ) {
+        this.$store.commit("user/addUser", {
+          username: this.$cookies.get("user-params").username,
+          access_token: this.$cookies.get("user-params").access_token,
+        });
+      }
+      return this.$store.state.user;
+    },
+  },
   data() {
     return {
       items: [
         {
-          title: "Home",
+          title: "Accueil",
           icon: "home",
           to: { name: "index" },
         },
         {
-          title: "Inspire",
-          icon: "lightbulb",
-          to: { name: "inspire" },
+          title: "Gammes",
+          icon: "window-restore",
+          to: { name: "gammes" },
+        },
+        {
+          title: "Composants",
+          icon: "tools",
+          to: { name: "gestionComposants" },
+        },
+        {
+          title: "Modules",
+          icon: "border-all",
+          to: { name: "modules" },
+        },
+        {
+          title: "Devis",
+          icon: "file-document-edit-outline",
+          to: { name: "crea_projet" },
+        },
+        {
+          title: "Utilisateurs",
+          icon: "account",
+          to: { name: "users" },
+        },
+        {
+          title: "Client",
+          icon: "account-cash",
+          to: { name: "ListClient" },
+        },
+        {
+          title: "Unités et caractéristiques",
+          icon: "ruler",
+          to: { name: "unitesCaracteristiques" },
         },
       ],
     };
