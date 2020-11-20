@@ -106,14 +106,15 @@
       <b-button type="is-success" @click="insertComposant"
         ><i class="fa fa-check"></i
       ></b-button>
-      <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
-      <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
+      <b-button type="is-danger" @click="deleteComposant"><i class="fa fa-minus-circle"></i></b-button>
     </div>
     <div v-if="data !== null">
       <b-table
         class="tableComposants"
         :data="data"
         :columns="columns"
+        :selected.sync="selected"
+        focusable
       ></b-table>
     </div>
   </section>
@@ -129,6 +130,7 @@ export default {
       caracteristique: null,
       data: null,
       dataUnite: null,
+      selected: null,
       columns: [
         {
           field: "nomComposant",
@@ -164,12 +166,44 @@ export default {
     insertComposant() {
       this.$axios.$post(`${API_URL}/composant`, {
         nomComposant: this.nomComposant,
-        uniteMesure: this.uniteMesure,
-        nomCaracteristique: this.nomCaracteristique,
+        unité: this.uniteMesure,
+        nomCaracteristique: this.caracteristique,
       });
-      // console.log(this.nomComposant);
-      // console.log(this.uniteMesure);
+      const composantObj = {
+        nomComposant: this.nomComposant,
+        unité: this.uniteMesure,
+        nomCaracteristique: this.caracteristique,
+      } 
+      this.data.push(composantObj);
     },
+    deleteComposant(){
+      const deleteComposantApi = async () => {
+        try {
+            await this.$axios.$delete(`${API_URL}/composant/${this.selected._id}`);
+            this.data = await this.$axios.$get(`${API_URL}/composant`);
+        } catch (e) {
+          return new Error("Impossible de supprimer le composant.");
+        }
+      };
+        this.$buefy.dialog.confirm({
+          message: 'Voulez-vous supprimer ce composant?',
+          onConfirm: () => {
+            try {
+              this.$buefy.toast.open({
+                message: "Suppression effectuée",
+                type: "is-success",
+              });
+              deleteComposantApi();
+            }
+            catch(e) {
+              this.$buefy.toast.open({
+                message: e.message,
+                type: "is-danger",
+              });
+            }
+          }
+        })
+    }
   },
 };
 </script>

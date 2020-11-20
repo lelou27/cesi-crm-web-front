@@ -94,6 +94,11 @@ export default {
           icon: "account-cash",
           to: { name: "ListClient" },
         },
+        {
+          title: "Unités et caractéristiques",
+          icon: "ruler",
+          to: { name: "unitesCaracteristiques" },
+        },
       ],
     };
   },
