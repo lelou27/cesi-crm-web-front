@@ -5,40 +5,28 @@
   text-align: center;
 }
 
+.tableComposants{
+  height: 200px;
+}
+
 .title {
   margin-top: 5%;
 }
 
+.titleInputModule{
+  width: 100%;
+}
+
 .saisie {
-  display: flex;
-  //flex-direction: justify-content;
   margin-right: 2em;
-  margin-top: 5%;
-
-  .field {
-    width: 50%;
-  }
-
-  .btnCombo {
-    width: 15vw;
-  }
-
-  .mesure {
-    width: 25%;
-  }
-
-  .smallButtons {
-    width: 2.5vw;
-  }
-
-  justify-content: space-between;
+  margin-top: 2%;
 }
 
 .boutons {
   width: 50%;
   margin-left: 25%;
   text-align: center;
-  margin-top: 5%;
+  margin-top: 2%;
 
   .button {
     width: 10%;
@@ -53,103 +41,86 @@
     }
   }
 }
+
 .tableGammes {
+  margin-top: 5%;
+}
+
+.menuComp{
   margin-top: 5%;
 }
 </style>
 <template>
   <section class="page">
+    <div v-if="modules === null && !error">
+      <b-loading
+        :is-full-page="false"
+        v-model="loading"
+        :can-cancel="true"
+      ></b-loading>
+    </div>
     <div class="title text-center">
       <h1 class="text-center">Modules</h1>
     </div>
+    <div class="columns">
+      <div class="column is-half">
+        <div class="saisie">
+          <b-field class="titleInputModule" v-if="module">
+            <b-input
+              placeholder="Nom du module"
+              v-model="module.nomModule"
+              type="text"
+              icon="account"
+              icon-right="close-circle"
+              icon-right-clickable
+              icon-right-click="close-circle"
+              required
+              rounded
+            >
+            </b-input>
+          </b-field>
+        </div>
 
-    <div class="saisie">
-      <b-field class="titleInputModule">
-        <b-input
-          placeholder="Nom du module"
-          v-model="name"
-          type="text"
-          icon="account"
-          icon-right="close-circle"
-          icon-right-clickable
-          icon-right-click="close-circle"
-          required
-          rounded
-        >
-        </b-input>
-      </b-field>
-      <span>
-        <b-select aria-role="list" v-model="caracteristiques" placeholder="Caractéristiques">
-          <option v-for="carac in dataCarac">{{carac.nomCaracteristique}}</option>
-        </b-select>
-        <!-- <b-dropdown aria-role="list">
-          <button
-            class="button is-dark btnCombo"
-            slot="trigger"
-            slot-scope="{ active }"
-          >
-            <span class="caracCombo">Caractéristiques</span>
-            <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-          </button>
-          <b-dropdown-item aria-role="listitem"
-            >Hauteur-Longueur</b-dropdown-item
-          >
-        </b-dropdown> -->
-        <b-dropdown aria-role="list">
-          <button
-            class="button is-dark btnCombo"
-            slot="trigger"
-            slot-scope="{ active }"
-          >
-            <span class="unitéCombo">Unité d'usage</span>
-            <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-          </button>
-          <b-dropdown-item aria-role="listitem">Mètre linéaire</b-dropdown-item>
-        </b-dropdown>
-      </span>
-    </div>
-    <div class="saisie">
-      <b-dropdown aria-role="list">
-        <button
-          class="button is-dark btnCombo"
-          slot="trigger"
-          slot-scope="{ active }"
-        >
-          <span class="unitéCombo">Composants</span>
-          <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-        </button>
-        <b-dropdown-item aria-role="listitem">Mur en bois</b-dropdown-item>
-      </b-dropdown>
-      <b-field class="titleInputMesure mesure">
-        <b-input
-          placeholder="Mesure"
-          v-model="name"
-          type="text"
-          icon="account"
-          icon-right="close-circle"
-          icon-right-clickable
-          icon-right-click="close-circle"
-          required
-          rounded
-        >
-        </b-input>
-      </b-field>
-      <span>
-        <b-button type="is-dark"><i class="fa fa-plus"></i></b-button>
-        <b-button type="is-dark"><i class="fa fa-minus"></i></b-button>
-      </span>
-      <b-table
-        class="tableComposants"
-        :data="dataComposants"
-        :columns="columnsComposants"
-      ></b-table>
+        <div class="menuComp">
+          <b-field>
+            <b-select
+              placeholder="Gamme"
+              size="is-default"
+              v-model="module.nomGamme"
+              expanded>
+              <option v-for="gamme in dataGammes">{{gamme.nomGamme}}</option>
+            </b-select>
+          </b-field>
+          <b-field>
+            <b-select
+              placeholder="Composant"
+              size="is-default"
+              v-model="composantSelected"
+              required
+              expanded>
+              <option v-for="item in dataComposants" :value="item._id">{{item.nomComposant}}</option>
+            </b-select>
+          </b-field>
+          <span>
+            <b-button type="is-dark" @click="addComposant"><i class="fa fa-plus"></i></b-button>
+            <b-button type="is-dark"><i class="fa fa-minus"></i></b-button>
+          </span>
+        </div>
+      </div>
+      <div class="column is-half">
+        <b-table
+          class="tableComposants"
+          :data="module.composants"
+          :columns="columnsComposants"
+        ></b-table>
+      </div>
     </div>
     <div class="boutons">
-      <b-button type="is-success"><i class="fa fa-check"></i></b-button>
+      <b-button type="is-success" @click="createModule"><i class="fa fa-check"></i></b-button>
       <b-button type="is-warning"> <i class="fa fa-edit"></i> </b-button>
       <b-button type="is-danger"><i class="fa fa-minus-circle"></i></b-button>
     </div>
-    <b-table class="tableGammes" :data="data" :columns="columns"></b-table>
+    <b-table class="tableGammes" :data="modules" :columns="columnsModule"></b-table>
   </section>
 </template>
 
@@ -158,49 +129,67 @@ import { API_URL } from "@/constants/contants";
 export default {
   data() {
     return {
-      data: [
-        {
-          nomModule: "Nullos",
-          caractéristiques: "Hauteur-Longueur",
-          unitéUsage: "m²",
-        },
-        {
-          nomModule: "Bof",
-          caractéristiques: "Hauteur-Longueur",
-          unitéUsage: "m²",
-        },
-        {
-          nomModule: "Joli module <3",
-          caractéristiques: "Hauteur-Longueur",
-          unitéUsage: "m²",
-        },
-      ],
-      dataComposants: [
-        { nomComposant: "Composant 1" },
-        { nomComposant: "Composant 2" },
-      ],
-      columns: [
+      formError: null,
+      loading: false,
+      error: null,
+      modules: [],
+      composantSelected: null,
+      gammeSelected: null,
+      module: {
+        nomModule: "",
+        nomGamme: "",
+        composants: []
+      },
+      columnsModule: [
         {
           field: "nomModule",
           label: "Nom du module",
         },
-        {
-          field: "caractéristiques",
-          label: "Caractéristiques",
-        },
-        {
-          field: "unitéUsage",
-          label: "Unité d'usage",
-        },
       ],
+      dataGammes: [],
+      dataComposants: [],
       columnsComposants: [
         {
           field: "nomComposant",
           label: "Nom du composant",
         },
       ],
-      name: null,
     };
   },
+  methods: {
+    async createModule(event) {
+      event.preventDefault();
+
+      this.formError = null;
+      if (!this.module.nomModule) {
+        this.formError = "Tout les champs sont requis";
+      }
+
+      try {
+        await this.$axios.$post(`${API_URL}/module`, this.module);
+        this.modules.push(this.module);
+      } catch (e) {
+        this.formError = e.message;
+      }
+    },
+
+    addComposant(){
+      console.log(this.composantSelected)
+      const composant = this.dataComposants.filter((comp) => this.composantSelected === comp._id)[0]
+      console.log(composant)
+      this.module.composants.push(composant)
+    }
+  },
+
+  async fetch() {
+    try {
+      this.loading = true;
+      this.modules = await this.$axios.$get(`${API_URL}/module/all`);
+      this.dataComposants = await this.$axios.$get(`${API_URL}/composant`);
+      this.dataGammes = await this.$axios.$get(`${API_URL}/gamme/all`);
+    } catch (e) {
+      this.error = e;
+    }
+  }
 };
 </script>
