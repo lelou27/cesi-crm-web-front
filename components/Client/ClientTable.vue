@@ -16,6 +16,7 @@ import { API_URL, ROUTE_GET_CLIENT } from "~/constants/contants";
 
 export default {
 name: "ClientTable",
+  //méthode qui permet au chargement de la page de récupérer tout les clients
   async fetch() {
   this.isLoading = true
         try {
@@ -35,6 +36,7 @@ name: "ClientTable",
       perPage: 10,
       data: [],
       isPaginated: true,
+      // les colonnes affichées sont gérées dans ce tableau
       columns: [
         {
           field: 'first_name',
@@ -61,8 +63,8 @@ name: "ClientTable",
     }
   },
   methods: {
+    //méthode qui permet de renvoyer vers la page détail client
     selected(item){
-      console.log(item._id)
       this.$router.push(`/detailClient?id=${item._id}` )
     },
   }
