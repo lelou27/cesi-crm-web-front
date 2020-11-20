@@ -162,6 +162,7 @@ export default {
     };
   },
   methods: {
+    //envoi le formulaire afin de créer un client
     async submitForm(event) {
       event.preventDefault();
       try {
@@ -174,7 +175,7 @@ export default {
           city: this.city,
           country: this.country,
         };
-
+        //appel à l'api
         try {
           await this.$axios.post(`${API_URL}${ROUTE_CREATE_CLIENT}`, data_post);
           this.$router.push('/listClient')
