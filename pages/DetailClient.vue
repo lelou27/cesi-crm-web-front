@@ -1,7 +1,7 @@
 <template>
   <section class="middle">
     <div class="title">
-    <h1>Détail client</h1>
+      <h1>Détail client</h1>
     </div>
     <div class="columns">
       <div class="column is-7">
@@ -146,7 +146,7 @@
 
             <div class="columns">
               <div class="buttons">
-              <div class="column is-4">
+                <div class="column is-4">
                   <b-button
                     id="edit_btn"
                     @click="disabled_fields"
@@ -154,8 +154,8 @@
                   >
                     Modifier
                   </b-button>
-              </div>
-              <div class="column is-4">
+                </div>
+                <div class="column is-4">
                   <b-button
                     id="cancel_btn"
                     :disabled="disabled"
@@ -163,28 +163,25 @@
                   >
                     Annuler
                   </b-button>
-              </div>
-              <div class="column is-4">
+                </div>
+                <div class="column is-4">
                   <b-input
                     id="validate_btn"
                     :disabled="disabled"
                     type="submit"
                   ></b-input>
-              </div>
+                </div>
               </div>
             </div>
             <div class="columns">
               <div class="buttons">
                 <div class="column is-6">
-                  <b-button tag="router-link"
-                            to="/listClient">
+                  <b-button tag="router-link" to="/listClient">
                     Liste Client
                   </b-button>
                 </div>
                 <div class="column is-6">
-                  <b-button  @click="deleteUser">
-                    Supprimer Client
-                  </b-button>
+                  <b-button @click="deleteUser"> Supprimer Client </b-button>
                 </div>
               </div>
             </div>
@@ -192,16 +189,34 @@
         </section>
       </div>
       <div class="column is-5">
-        <div>
-          <b-table :columns="quoteColumns" :data="quoteList"></b-table>
+        <div v-if="devis && devis.length > 0">
+          <b-table
+            :columns="devisColumns"
+            :data="devis"
+            checkable
+            :is-row-checkable="(row) => haveNotFacture(row)"
+            :checked-rows.sync="checkedDevis"
+          ></b-table>
+          <b-button
+            class="button is-primary mt-2"
+            :loading="loadingCreateFacture === true"
+            :disabled="checkedDevis.length === 0 || loadingCreateFacture"
+            @click="generateFactures"
+          >
+            Générer les factures
+          </b-button>
         </div>
-        <div>
-          <b-table :columns="billColumns" :data="billList"></b-table>
+        <div v-if="factures && factures.length > 0">
+          <b-table
+            :columns="facturesColumns"
+            :data="factures"
+            :selected.sync="selectedRowFacture"
+            @click="downloadPdf"
+          ></b-table>
         </div>
       </div>
     </div>
   </section>
-
 </template>
 
 <script>
@@ -219,32 +234,31 @@ export default {
       disabled: true,
       city: null,
       country: null,
-      quoteList: [
-        { devis: "02/05/2020" },
-        { devis: "03/05/2020" },
-        { devis: "04/05/2020" },
-        { devis: "03/06/2020" },
-        { devis: "03/07/2020" },
-        { devis: "03/08/2020" },
-      ],
-      quoteColumns: [
+      factures: null,
+      devis: null,
+      checkedDevis: [],
+      selectedRowFacture: {},
+      loadingCreateFacture: false,
+      facturesColumns: [
         {
-          field: "devis",
-          label: "Devis",
+          field: "createdAt",
+          label: "Date facture",
+          width: "100%",
+          centered: true,
         },
       ],
-      billList: [
-        { facture: "02/05/2020" },
-        { facture: "03/05/2020" },
-        { facture: "04/05/2020" },
-        { facture: "03/06/2020" },
-        { facture: "03/07/2020" },
-        { facture: "03/08/2020" },
-      ],
-      billColumns: [
+      devisColumns: [
         {
-          field: "facture",
-          label: "Facture",
+          field: "createdAt",
+          label: "Date devis",
+          width: "50%",
+          centered: true,
+        },
+        {
+          field: "updatedAt",
+          label: "Date de dernière modification",
+          width: "50%",
+          centered: true,
         },
       ],
       errors: [],
@@ -262,6 +276,25 @@ export default {
       this.postalCode = client.postal_code;
       this.city = client.city;
       this.country = client.country;
+
+      this.factures = await this.$axios.$get(
+        `${API_URL}/facture/all/${client._id}`
+      );
+      if (this.factures.length > 0) {
+        this.factures.forEach(
+          (f) => (f.createdAt = this.$moment(f.createdAt).format("DD/MM/YYYY"))
+        );
+        this.selectedRowFacture = this.factures[0];
+      }
+
+      this.devis = await this.$axios.$get(`${API_URL}/devis/all/${client._id}`);
+
+      if (this.devis.length > 0) {
+        this.devis.forEach((d) => {
+          d.createdAt = this.$moment(d.createdAt).format("DD/MM/YYYY");
+          d.updatedAt = this.$moment(d.updatedAt).format("DD/MM/YYYY");
+        });
+      }
     } catch (e) {
       throw e;
     }
@@ -270,7 +303,9 @@ export default {
     deleteUser() {
       const deleteClientApi = async () => {
         try {
-            await this.$axios.$delete(`${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`);
+          await this.$axios.$delete(
+            `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`
+          );
         } catch (e) {
           return new Error("Impossible de supprimer l'utilsateur.");
         }
@@ -284,7 +319,7 @@ export default {
               type: "is-success",
             });
             deleteClientApi();
-            this.$router.push('/listClient');
+            this.$router.push("/listClient");
           } catch (e) {
             this.$buefy.toast.open({
               message: e.message,
@@ -325,12 +360,78 @@ export default {
           country: this.country,
         };
         await this.$axios.$put(
-          `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`,data_post
+          `${API_URL}${ROUTE_GET_CLIENT}/${this.$route.query.id}`,
+          data_post
         );
-        this.$router.push('/listClient')
+        this.$router.push("/listClient");
       } catch (e) {
         this.errors.push(e.message);
       }
+    },
+    haveNotFacture(row) {
+      let enabled = true;
+      if (this.factures && this.factures.length > 0) {
+        this.factures.forEach((f) => {
+          if (f.devis === row._id) {
+            enabled = false;
+          }
+        });
+      }
+
+      return enabled;
+    },
+    downloadPdf() {
+      if (this.selectedRowFacture.filename) {
+        this.$axios({
+          url: `${API_URL}/facture/download/${this.selectedRowFacture.filename}`,
+          method: "GET",
+          responseType: "blob", // important
+        }).then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            `factureClient_${
+              this.selectedRowFacture.client.first_name
+            }_${this.$moment(
+              this.selectedRowFacture.createdAt,
+              "YYYY-MM-DD"
+            ).format("DD_MM_YYYY")}.pdf`
+          );
+          document.body.appendChild(link);
+          link.click();
+        });
+      }
+    },
+    async generateFactures() {
+      this.loadingCreateFacture = true;
+      await this.checkedDevis.forEach(async (d) => {
+        await this.$axios.$get(`${API_URL}/facture/generateFacture/${d._id}`);
+      });
+      
+      this.loadingCreateFacture = false;
+      this.factures = await this.$axios.$get(
+        `${API_URL}/facture/all/${this.$route.query.id}`
+      );
+      if (this.factures.length > 0) {
+        this.factures.forEach(
+          (f) => (f.createdAt = this.$moment(f.createdAt).format("DD/MM/YYYY"))
+        );
+        this.selectedRowFacture = this.factures[0];
+      }
+
+      this.loadingCreateFacture = false;
+      this.factures = await this.$axios.$get(
+        `${API_URL}/facture/all/${this.$route.query.id}`
+      );
+      if (this.factures.length > 0) {
+        this.factures.forEach(
+          (f) => (f.createdAt = this.$moment(f.createdAt).format("DD/MM/YYYY"))
+        );
+        this.selectedRowFacture = this.factures[0];
+      }
+      this.checkedDevis = [];
     },
   },
 };
@@ -367,9 +468,8 @@ body {
   }
 }
 
-.width100{
+.width100 {
   width: 100%;
-
 }
 tbody div {
   overflow: scroll;
