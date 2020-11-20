@@ -73,7 +73,6 @@
     <div class="title text-center">
       <h1 class="text-center">Gammes</h1>
     </div>
-
     <div class="saisie" v-if="gamme">
       <b-field class="titleInputComposant">
         <b-input
