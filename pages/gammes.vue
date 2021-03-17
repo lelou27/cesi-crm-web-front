@@ -23,7 +23,7 @@
     width: 2.5vw;
   }
 
-  .modulesSelect{
+  .modulesSelect {
     display: flex;
     justify-content: space-between;
     width: 15vw;
@@ -106,28 +106,41 @@
           </option>
         </b-select>
         <span>
-          <b-button type="is-dark" @click="insertModule"><i class="fa fa-plus"></i></b-button>
-          <b-button type="is-dark" @click="removeModule"><i class="fa fa-minus"></i></b-button>
+          <b-button type="is-dark" @click="insertModule"
+            ><i class="fa fa-plus"></i
+          ></b-button>
+          <b-button type="is-dark" @click="removeModule"
+            ><i class="fa fa-minus"></i
+          ></b-button>
         </span>
       </div>
       <div v-if="dataModules !== null">
-      <b-table
-        class="tableModules"
-        :data="dataModules"
-        :columns="columnsModules"
-        :selected.sync="selected2"
-      focusable></b-table>
-    </div>
+        <b-table
+          class="tableModules"
+          :data="dataModules"
+          :columns="columnsModules"
+          :selected.sync="selected2"
+          focusable
+        ></b-table>
+      </div>
     </div>
 
     <div class="boutons">
       <b-button type="is-success" @click="createGamme"
         ><i class="fa fa-check"></i
       ></b-button>
-      <b-button type="is-danger" @click="deleteGamme"><i class="fa fa-minus-circle"></i></b-button>
+      <b-button type="is-danger" @click="deleteGamme"
+        ><i class="fa fa-minus-circle"></i
+      ></b-button>
     </div>
     <div v-if="gammes">
-      <b-table class="tableGammes" :data="gammes" :columns="columns" :selected.sync="selected" focusable></b-table>
+      <b-table
+        class="tableGammes"
+        :data="gammes"
+        :columns="columns"
+        :selected.sync="selected"
+        focusable
+      ></b-table>
     </div>
   </section>
 </template>
@@ -158,6 +171,7 @@ export default {
       ],
       gamme: {
         nomGamme: "",
+        modules: [],
       },
       module: {
         nomModule: "",
@@ -186,54 +200,57 @@ export default {
         this.formError = e.message;
       }
     },
-    deleteGamme(){
+    deleteGamme() {
       const deleteGammeApi = async () => {
         try {
-            console.log(this.selected._id)
-            await this.$axios.$delete(`${API_URL}/gamme/${this.selected._id}`);
-            this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
+          await this.$axios.$delete(`${API_URL}/gamme/${this.selected._id}`);
+          this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
         } catch (e) {
           return new Error("Impossible de supprimer la gamme.");
         }
       };
-        this.$buefy.dialog.confirm({
-          message: 'Voulez-vous supprimer cette gamme?',
-          onConfirm: () => {
-            try {
-              this.$buefy.toast.open({
-                message: "Suppression effectuée",
-                type: "is-success",
-              });
-              deleteGammeApi();
-            }
-            catch(e) {
-              this.$buefy.toast.open({
-                message: e.message,
-                type: "is-danger",
-              });
-            }
+      this.$buefy.dialog.confirm({
+        message: "Voulez-vous supprimer cette gamme?",
+        onConfirm: () => {
+          try {
+            this.$buefy.toast.open({
+              message: "Suppression effectuée",
+              type: "is-success",
+            });
+            deleteGammeApi();
+          } catch (e) {
+            this.$buefy.toast.open({
+              message: e.message,
+              type: "is-danger",
+            });
           }
-        })
+        },
+      });
     },
-    insertModule(){
-      const moduleAdd = { nomModule: this.nomModule }
-      this.dataModules.push(moduleAdd)
+    insertModule() {
+      const moduleAdd = { nomModule: this.nomModule };
+      const mod = this.modulesList.filter(
+        (m) => m.nomModule === this.nomModule
+      )[0];
+      this.gamme.modules.push(mod._id);
+      this.dataModules.push(moduleAdd);
     },
-    removeModule(){
-      const moduleAdd = { nomModule: this.selected2.nomModule}
-      this.dataModules = this.dataModules.filter((data) => data.nomModule !== this.selected2.nomModule)
-    }
+    removeModule() {
+      const moduleAdd = { nomModule: this.selected2.nomModule };
+      this.dataModules = this.dataModules.filter(
+        (data) => data.nomModule !== this.selected2.nomModule
+      );
+    },
   },
 
   async fetch() {
     this.loading = true;
     try {
       this.gammes = await this.$axios.$get(`${API_URL}/gamme/all`);
-      this.modulesList = await this.$axios.$get(`${API_URL}/module/all`)
+      this.modulesList = await this.$axios.$get(`${API_URL}/module/all`);
     } catch (e) {
       this.error = e;
     }
   },
-  
 };
 </script>

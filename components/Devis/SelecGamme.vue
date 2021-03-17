@@ -151,6 +151,11 @@ h1 {
         <TableDevis
           :modules="this.$store.state.devis.modules"
           @removeModuleToStore="removeModuleToStore"
+          :nomGamme="
+            nomGammeSelected
+              ? nomGammeSelected
+              : null
+          "
         />
       </div>
     </div>
@@ -172,6 +177,7 @@ h1 {
 <script>
 import { API_URL } from "@/constants/contants";
 import TableDevis from "@/components/Devis/Table_Module";
+import gammes from "@/pages/gammes";
 
 export default {
   name: "SelecGamme",
@@ -187,6 +193,7 @@ export default {
       modulesToDisplay: null,
       selectedModele: null,
       sendDevisLoading: false,
+      nomGammeSelected: null,
 
       data1: [
         { name: "Bronze" },
@@ -233,6 +240,7 @@ export default {
       const test = this.gammes.filter((g) => {
         return g._id === this.gammesSelected;
       });
+      this.nomGammeSelected = test[0].nomGamme
       this.modulesToDisplay = test[0].modules;
     },
     async addModuleToStore() {

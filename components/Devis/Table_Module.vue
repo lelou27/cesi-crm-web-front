@@ -111,9 +111,9 @@ button {
         <td>
           <p class="custom-dropdown">
             {{
-              mod.nomGamme
-                ? mod.nomGamme
-                : "lolololololololololololololololololo"
+              nomGamme
+                ? nomGamme
+                : "Gamme"
             }}
           </p>
         </td>
@@ -145,7 +145,7 @@ button {
 <script>
 export default {
   name: "TableDevis",
-  props: ["modules"],
+  props: ["modules", "nomGamme"],
   date() {
     return {
       test: null
